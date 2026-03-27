@@ -1,0 +1,15 @@
+project:
+  type: book
+
+book:
+  title: "Exploratory analysis in R"
+  author: "JC"
+  chapters:
+    - index.qmd
+
+format:
+  html:
+    theme: cosmo
+    toc: true
+    page-layout: full
+    css: dense-notes.css
