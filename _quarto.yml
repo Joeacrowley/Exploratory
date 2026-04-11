@@ -6,7 +6,13 @@ book:
   author: "JC"
   chapters:
     - index.qmd
-
+    - part: "Dataset overview"
+      chapters:
+        - look_for.qmd
+        - Data dictionary.qmd
+        - Frequency function for SPSS.qmd
+        - Overview of SPSS data.qmd
+    
 format:
   html:
     theme: cosmo

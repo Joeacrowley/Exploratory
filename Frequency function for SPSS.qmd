@@ -1,0 +1,276 @@
+---
+title: "Frequency function for SPSS"
+format: html
+editor: visual
+---
+
+Access function: [Data dictionary](Scripts/freq_spss.R). 
+
+## Package set up
+
+```{r packages, collapse = T}
+library(haven)
+library(tidyverse)
+library(labelled)
+library(flextable)
+library(huxtable)
+```
+
+```{r load data}
+
+# Load BSA teaching data
+df <- read_sav('/Users/joecrowley/R/Data/BSA Teaching Data/spss/spss25/bsa2019_poverty_open.sav', user_na = T)
+
+df %>% 
+  select(welfare2, leftrigh, libauth, RSex, RAgeCat) %>% 
+  look_for()
+
+```
+
+<br> 
+
+## freq_spss
+
+### What the function does
+
+`freq_spss()` produces a frequency table for a labelled survey variable, modelled on the output style of SPSS. It is designed for use with **haven-imported datasets**, where variables carry value labels, variable labels, and user-defined missing values (user NAs) — metadata that ordinary R frequency tools ignore.
+
+The output distinguishes three kinds of rows:
+
+- **Valid responses** — cases with a recognised, non-missing value. These rows show frequency, percentage of valid cases, and cumulative percentage within valid cases.
+- **User-defined missing values** — codes the researcher has flagged as missing (e.g. "Don't know", "Refused") but which are tracked separately rather than silently dropped. These rows show frequency only.
+- **Total columns** — percentage and cumulative percentage computed across *all* rows (valid + user NAs combined), replicating the "Total %" column familiar from SPSS output.
+
+The result is either a plain **tibble** (for downstream manipulation) or a formatted **flextable** (for Word reports or RMarkdown output), depending on the `as_flextable` argument.
+
+---
+
+### How the code works
+
+#### 1. Input validation and setup
+
+The function begins with a simple data frame check, then extracts the target variable as a plain vector using `pull()`. A descriptive column label is constructed by combining the R variable name with the haven variable label (`var_label()`).
+
+#### 2. Three factor views
+
+The variable is converted into factors three times, each serving a different purpose:
+
+| Object | Contents | How produced |
+|---|---|---|
+| `var_all` | All values including user NAs | `to_factor(levels = "prefixed")` |
+| `var_no_NA` | Valid values only | `to_factor(..., user_na_to_na = TRUE)` |
+| `var_only_NA` | User-NA values only | Subset raw variable to `na_values` attribute, then convert |
+
+The `levels = "prefixed"` argument produces labels in the form `[1] Yes`, which preserves the numeric code alongside the label text.
+
+#### 3. Three sub-tables, then joined
+
+Rather than a single computation, the table is assembled from three separate tibbles that are then joined:
+
+- **`valid_tbl`** — counts and proportions of non-missing cases, with cumulative % computed at this stage (so it runs only over valid rows).
+- **`user_na_tbl`** — counts only, for user-NA rows.
+- **`total_tbl`** — proportions across all rows combined.
+
+These are joined sequentially with explicit `full_join(..., by = "f")` calls. The `n` and `type` columns that collide across joins are resolved with `coalesce()`. Rows are then `arrange()`d to put valid cases first before `cumsum()` computes the total cumulative percentage, ensuring stable ordering.
+
+#### 4. Label deduplication
+
+Haven's prefix format (`[1] Yes`) can produce redundant labels for unlabelled numeric variables, where a value like `1` gets labelled `[1] 1`. The function detects this by splitting each level on `] ` and comparing the left (value) and right (label) parts. Where they match, the prefix is stripped. A deduplication step guards against duplicate names in the recoding vector, which would otherwise trigger a warning from `fct_recode()`.
+
+#### 5. Output
+
+The `type` column and the generic `f` column name are tidied up — `f` is replaced by the descriptive variable label. If `as_flextable = TRUE`, the tibble is passed to an internal helper `.freq_format_table()`, which applies row shading (blue for valid, grey for user NAs), human-readable column headers, right-alignment, and vertical dividers.
+
+*Requires: `dplyr`, `forcats`, `stringr`, `purrr`, `labelled`, `flextable`*
+
+```{r freq_spss}
+
+#' Generate an SPSS-style frequency table for a labelled variable
+#'
+#' @param data        A data frame containing the variable of interest.
+#' @param var         The (unquoted) variable to tabulate.
+#' @param as_flextable Logical. If TRUE, returns a formatted flextable;
+#'                    otherwise returns a plain tibble. Default: FALSE.
+#' @return A tibble or flextable with frequency, percentage, cumulative %,
+#'         and totals, with user-defined missing values distinguished from
+#'         valid values.
+
+freq_spss <- function(data, var, as_flextable = FALSE) {
+  
+  # ── Input validation ─────────────────────────────────────────────────────────
+  if (!is.data.frame(data)) stop("`data` must be a data frame.")
+  
+  # ── 1. Extract the raw variable and build a descriptive column label ──────────
+  variable <- data %>% dplyr::pull({{var}})
+  label <- paste0(
+    data %>% dplyr::select({{var}}) %>% names,
+    " - ",
+    labelled::var_label(variable)
+  )
+  
+  # ── 2. Build three views of the variable as factors ───────────────────────────
+  var_all <- variable %>% labelled::to_factor(levels = "prefixed") %>% forcats::fct_drop()
+  
+  var_no_NA <- variable %>% labelled::to_factor(levels = "prefixed", user_na_to_na = TRUE) %>% forcats::fct_drop()
+  
+  user_na_vals <- attr(variable, "na_values")
+  
+  if (is.null(user_na_vals) || length(user_na_vals) == 0) {
+    var_only_NA <- factor(character(0))
+  } else {
+    var_only_NA <- variable[variable %in% user_na_vals] %>%
+      labelled::to_factor(levels = "prefixed") %>%
+      forcats::fct_drop()
+  }
+  
+  # ── 3. Build the frequency table by joining three sub-tables ──────────────────
+  valid_tbl <- var_no_NA %>%
+    stats::na.omit() %>%
+    forcats::fct_count(prop = TRUE) %>%
+    dplyr::filter(!is.na(f)) %>%
+    dplyr::mutate(
+      cum_p = paste0(round(cumsum(p) * 100, 2), "%"),
+      p     = paste0(round(p * 100, 2), "%"),
+      type  = "valid"
+    )
+  
+  user_na_tbl <- var_only_NA %>%
+    forcats::fct_count(prop = FALSE) %>%
+    dplyr::mutate(type = "user_na")
+  
+  total_tbl <- var_all %>%
+    forcats::fct_count(prop = TRUE) %>%
+    dplyr::select(-n) %>%
+    dplyr::rename(total_p = p)
+  
+  table <- valid_tbl %>%
+    dplyr::full_join(user_na_tbl, by = "f") %>%
+    dplyr::full_join(total_tbl,   by = "f") %>%
+    dplyr::mutate(
+      n    = dplyr::coalesce(n.x, n.y),
+      type = dplyr::coalesce(type.x, type.y)
+    ) %>%
+    dplyr::select(-n.x, -n.y, -type.x, -type.y) %>%
+    dplyr::arrange(desc(type == "valid"), f) %>%
+    dplyr::mutate(
+      cum_p_total = paste0(round(cumsum(total_p) * 100, 2), "%"),
+      total_p     = paste0(round(total_p * 100, 2), "%")
+    ) %>%
+    dplyr::select(type, f, n, p, cum_p, total_p, cum_p_total) 
+  
+  # ── 4. Clean up factor level labels ───────────────────────────────────────────
+  labels_full          <- table %>% dplyr::pull(f)
+  max_break_appearance <- labels_full %>% as.character() %>% stringr::str_count("]") %>% max
+  
+  if (max_break_appearance == 1 && length(labels_full) > 0){
+    splits     <- labels_full %>% stringr::str_split("] ", n = 2)
+    labels     <- purrr::map_chr(splits, ~if (length(.x) >= 2) .x[2] else .x[1])
+    value_part <- purrr::map_chr(splits, ~.x[1]) %>% stringr::str_remove("\\[")
+    match      <- purrr::map2_lgl(labels, value_part, ~.x == .y)
+    
+    recoding        <- labels_full %>% as.character()
+    new_names       <- dplyr::case_when(match ~ labels, !match ~ as.character(labels_full))
+    names(recoding) <- new_names
+    recoding        <- recoding[!duplicated(names(recoding))]
+    
+    table <- table %>% dplyr::mutate(f = forcats::fct_recode(f, !!!recoding))
+  }
+  
+  names(table)[2] <- label
+  
+  # ── 5. Optional flextable formatting ─────────────────────────────────────────
+  if (isTRUE(as_flextable)) {
+    table <- .freq_format_table(table)
+  }
+  
+  return(table)
+}
+
+
+#' Internal helper: apply flextable formatting to a freq_spss tibble
+#'
+#' @param tbl A tibble returned by the core freq_spss logic (before column rename).
+#' @return A formatted flextable object.
+#' @keywords internal
+
+.freq_format_table <- function(tbl) {
+  tbl %>%
+    flextable::flextable() %>%
+    flextable::autofit() %>%
+    flextable::bg(i = ~type == "user_na", j = NULL, bg = "lightgrey") %>%
+    flextable::bg(i = ~type != "user_na", j = NULL, bg = "lightblue") %>%
+    flextable::bg(part = "header",                  bg = "lightgrey") %>%
+    flextable::delete_columns("type") %>%
+    flextable::set_header_labels(
+      n           = "Frequency",
+      p           = "Percentage",
+      cum_p       = "Cumulative %",
+      total_p     = "Total %",
+      cum_p_total = "Total Cumulative %"
+    ) %>%
+    flextable::align(j = -1, align = "right", part = "all") %>%
+    flextable::vline(j = c(1, 2, 4), part = "all")
+}
+
+```
+<br> 
+
+## Trials
+
+### Basic application
+
+```{r}
+
+freq_spss(data = df, var = skipmeal)
+
+```
+
+<br> 
+
+### With formatting
+
+```{r}
+
+freq_spss(data = df, var = skipmeal, as_flextable = TRUE)
+
+```
+
+
+```{r}
+freq_spss(data = df, var = Poverty1, as_flextable = TRUE)
+```
+
+<br> 
+
+### Illustration of what happens when some values have no labels...
+
+```{r}
+
+freq_spss(data = df, var = libauth, as_flextable = T)
+
+```
+
+<br> 
+
+## Write function
+
+```{r}
+
+# Collect both functions as named list
+fns <- list(
+  freq_spss       = freq_spss,
+  .freq_format_table = .freq_format_table
+)
+
+# Write each to the same file, separated by a blank line
+writeLines(
+  unlist(lapply(names(fns), function(nm) {
+    c(paste0(nm, " <- "), deparse(fns[[nm]]), "")
+  })),
+  "/Users/joecrowley/R/Exploratory/Scripts/freq_spss.R"
+)
+
+```
+
+
+

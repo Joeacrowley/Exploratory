@@ -1,0 +1,62 @@
+---
+title: "Overview of SPSS data"
+format: html
+editor: visual
+---
+
+## Package set up and load data
+
+```{r packages and data, collapse = T}
+
+library(haven)
+library(tidyverse)
+library(labelled)
+library(flextable)
+
+# Load BSA teaching data
+df <- read_sav('/Users/joecrowley/R/Data/BSA Teaching Data/spss/spss25/bsa2019_poverty_open.sav', user_na = T)
+source("/Users/joecrowley/R/Exploratory/Scripts/freq_spss.R")
+vars <- names(df)
+labels <- df %>% var_label(unlist = T, null_action = "fill")
+
+```
+
+<br> 
+
+## Contents 
+
+```{r contents, results='asis', echo = T}
+
+for (xxx in 1:length(vars)){
+  # print(xxx)
+  cat(paste0(" * [",vars[xxx],"]"))
+  cat(" :- ")
+  cat(labels[xxx])
+  cat("\n")
+
+}
+
+```
+
+<br> 
+
+## Variable overview
+
+```{r variable overview, results='asis', eval = T, echo=T, message=F, warning=F}
+
+for (var in vars){
+  
+  cat("\n")
+  cat("[Contents] ")
+  cat("\n\n\n")
+  cat("### ", var, "\n")
+  freq_spss(data = df, var = var, as_flextable = TRUE) %>% flextable_to_rmd()
+  cat("\n")
+  cat("<br>")
+  cat("\n")
+
+
+}
+
+```
+

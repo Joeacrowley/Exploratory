@@ -1,0 +1,368 @@
+---
+title: "Data dictionary"
+format: html
+editor: visual
+---
+
+Access function: [Data dictionary](Scripts/Data dictionary.R). 
+
+## Set up and load data
+
+```{r packages, collapse = T}
+
+library(haven)
+library(tidyverse)
+library(labelled)
+library(huxtable)
+library(openxlsx)
+
+```
+
+```{r load data}
+
+# Load BSA teaching data
+df <- read_sav('/Users/joecrowley/R/Data/BSA Teaching Data/spss/spss25/bsa2019_poverty_open.sav', user_na = T)
+
+df %>% 
+  select(welfare2, leftrigh, libauth, RSex, RAgeCat) %>% 
+  look_for()
+
+```
+
+<br> 
+
+## unique_vals
+
+```{r}
+
+unique_vals <- function(data, max_values = 30){
+  
+  vect <- 
+    data %>% 
+    map(., ~unique(to_factor(.x))) %>% 
+    map(., function(xxx) {
+      
+      vec_length <- length(xxx)
+      if(vec_length > max_values){vec_length <- max_values}
+      result <- paste0(xxx[1:vec_length], collapse = ", ")
+      return(result)
+      
+      }) %>%
+     as_tibble %>% 
+    pivot_longer(cols= everything())
+  
+  count_unique <- data %>% 
+    map(., ~length(unique(to_factor(.x)))) %>% 
+    as_tibble() %>% 
+    pivot_longer(cols = everything()) %>% 
+    rename(n_unique = value)
+  
+  vect <- full_join(count_unique, vect, by = "name") 
+  names(vect)[3] <- paste("First", max_values, "unique values")
+  
+  return(vect)
+
+}
+
+```
+
+<br> 
+
+### Trials
+
+#### Basic
+
+```{r}
+
+unique_vals(df)
+
+```
+
+<br> 
+
+#### Basic - with flextable
+
+```{r}
+
+unique_vals(df) %>% flextable::flextable() %>% flextable::autofit()
+
+```
+
+<br> 
+
+#### Set number of unique values to show
+
+```{r}
+
+unique_vals(df, max_values = 10) %>% flextable::flextable() %>% flextable::autofit()
+
+```
+
+<br> 
+
+## df_count 
+
+```{r count data frame}
+
+df_count <- function(data) { 
+    map(names(data), ~data %>% 
+          pull(all_of(.x)) %>% 
+          to_factor() %>% 
+          fct_count() %>% 
+          mutate(name = .x, .before = 1) %>% 
+          rename(levels = f) %>% 
+          filter(n != 0) %>%
+          mutate(id = row_number()) %>%
+          filter(id %in% 1:10) %>% 
+          mutate(Count = paste0(levels, ";  N = ", n)) %>% 
+          select(-id, -n, -levels)
+        ) %>% 
+      bind_rows 
+}
+
+```
+
+<br> 
+
+### Trials
+
+
+```{r}
+
+df %>% df_count
+
+```
+
+<br> 
+
+```{r}
+
+df %>% df_count() %>% print(n=100) %>% flextable::flextable() %>% flextable::autofit()
+
+```
+
+<br> 
+
+## fullsome
+
+```{r}
+
+fullsome <- function(data, max_values = 30, count = F, unique_vals = T){
+  
+  components <- list(
+  
+    map(data, ~sum(is.na(.x))) %>% as_tibble() %>% pivot_longer(cols = everything()) %>% rename(n_miss = value) %>% mutate(p_miss = paste0(round(n_miss / nrow(data) * 100, 2), "%")),
+    
+    map(data, ~paste0(class(.x), collapse = ", ")) %>% as_tibble() %>% pivot_longer(cols = everything()) %>% rename(class = value),
+    
+    map(data, ~var_label(.x)) %>% as_tibble() %>% pivot_longer(cols = everything()) %>% rename(label = value)
+    
+    )
+  
+  if(unique_vals == T){
+    components <- append(components, list(unique_vals(data, max_values = max_values)))
+  }
+  
+  results <- reduce(components, full_join, by = "name") %>% 
+    relocate(name, label, any_of("n_unique"), n_miss, p_miss, class)
+  
+    if (count == T) {
+    
+    counts <- data %>% df_count()
+    results <- full_join(results, counts, by = "name")
+        
+  }
+  
+  return(results)
+  
+}
+
+```
+
+<br> 
+
+### Trials
+
+<br> 
+
+#### Basic
+
+```{r}
+
+fullsome(df)
+
+```
+
+<br> 
+
+#### With flextable + number of values to show
+
+```{r}
+
+fullsome(df, max_values = 10) %>% flextable::flextable() %>% flextable::autofit()
+
+```
+
+<br> 
+
+#### Simplified
+
+No unique values, no count. Also - non-disclosive. 
+
+```{r}
+
+simplified <- fullsome(df, max_values = 10, unique_vals = F) 
+simplified%>% flextable::flextable() %>% flextable::autofit()
+```
+
+<br> 
+
+#### With counts
+
+```{r}
+
+counter <- fullsome(df, max_values = 10, count = T) 
+
+```
+
+<br> 
+
+#### With counts
+
+```{r}
+
+counter2 <- fullsome(df, max_values = 10, count = T, unique_vals = F) 
+counter2 %>% flextable::flextable() %>% flextable::theme_zebra()
+
+```
+
+<br> 
+
+## Bespoke huxtable formatting for fullsome()
+
+```{r}
+
+overview_hux <- function(data, flex = F){
+  
+   number_of_cols <- ncol(data)
+  
+    # Convert to huxtable
+    ht <- as_hux(data)
+    
+    # Vertically center-align all cells
+    ht <- set_valign(ht, everywhere, 1:number_of_cols, "middle")
+    
+    # Assign a fill color per group
+    group_ids <- data$name # Unique IDs for groups are the variable names
+    change <- group_ids == lag(group_ids) # Does variable name change? 
+    change[1] <- TRUE # Replace a missing value
+    change
+    group_colours <- factor(c("lightblue", "lightgreen")) # Row colour palette
+    group_colours
+    # For length of table identify the colour to use in each row
+    colours <- vector()
+    for(i in 1:length(group_ids)) {
+      # Each time the variable name changes reverse the colour palette
+      if(change[i] == FALSE){group_colours <- rev(group_colours)}
+      # Build up a vector of colours to use. Convert to character otherwise becomes numeric.
+      colours <- append(colours, as.character(group_colours[1]))
+    }
+    colours
+    
+    # Set the colours to be used
+    ht <- set_background_color(ht, row = 2:nrow(ht), col = 1:ncol(ht), colours)
+    ht <- set_background_color(ht, row = 1, col = everywhere, "lightgrey")
+    
+    # Merge repeated rows in the first seven columns
+    # Only do so where counts are added
+    if("Count" %in% names(data)){
+      r <- rle(group_ids) # Count lengths of runs of repeated values
+      r <- r$lengths # Extract those lengths from resulting object
+      merge_start <- 2 # Start on row 2
+      
+      # Loop over sets of repeated rows merging columns 1 to 7
+      for(i in 1:length(r)) {
+        ht <- set_rowspan(ht, row = merge_start, col = 1:(number_of_cols-1), value = r[i])
+        merge_start <- merge_start + r[i]
+        }
+    }
+    
+    # Add borders and alignment
+    ht <- ht |>
+      set_all_borders(1) |>
+      set_align(everywhere, everywhere, "center") |>
+      set_width(0.8)
+    
+    # if flex is TRUE then return flextable
+    if(flex == T){
+    return(ht %>% as_flextable())
+    } else {
+      # Otherwise return the huxtable
+      return(ht)
+    }
+  
+}
+
+```
+
+### Trial
+
+```{r}
+
+counter %>% overview_hux(flex = T)
+
+```
+
+### Trial 2
+
+```{r}
+
+counter2 %>% overview_hux(flex = T)
+
+```
+
+### Trial 3
+
+```{r}
+
+simplified %>% overview_hux(flex = T)
+
+```
+
+## Export
+
+```{r}
+
+wb <- as_Workbook(counter %>% overview_hux(flex = F), sheet = "overview")
+freezePane(wb, "overview", firstActiveRow = 2, firstActiveCol = NULL)
+saveWorkbook(wb, file = "./Data dictionary example.xlsx", overwrite = T)
+
+```
+
+## Save out function 
+
+```{r}
+# Collect both functions as named list
+fns <- list(
+  df_count = df_count,
+  unique_vals= unique_vals,
+  fullsome = fullsome, 
+  overview_hux = overview_hux
+)
+
+# Write each to the same file, separated by a blank line
+writeLines(
+  unlist(lapply(names(fns), function(nm) {
+    c(paste0(nm, " <- "), deparse(fns[[nm]]), "")
+  })),
+  "/Users/joecrowley/R/Exploratory/Scripts/Data dictionary.R"
+)
+```
+
+
+
+
+
+
+
+

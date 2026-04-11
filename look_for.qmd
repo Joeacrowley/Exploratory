@@ -1,0 +1,276 @@
+---
+title: "look_for2"
+format: html
+editor: visual
+---
+
+## Package set up
+
+```{r packages, collapse = T}
+
+library(haven)
+library(tidyverse)
+library(labelled)
+library(huxtable)
+options(huxtable.knit_print_df = FALSE)
+library(openxlsx)
+
+```
+
+```{r load data}
+
+## Load BSA teaching data
+df <- read_sav('/Users/joecrowley/R/Data/BSA Teaching Data/spss/spss25/bsa2019_poverty_open.sav', user_na = T)
+
+df %>% 
+  select(welfare2, leftrigh, libauth, RSex, RAgeCat) %>% 
+  look_for()
+
+```
+
+
+<br> 
+
+## Usage notes of the `look_for` function
+
+labelled() makes many see look good functions
+
+### Basic look_for
+
+This is great, but output can be long. Here I cut to first five variables for brevity of the RMarkdown. 
+
+```{r}
+look_for(df[1:5])
+```
+
+### with `details = FALSE`
+
+```{r}
+
+look_for(df, details = FALSE)
+
+```
+
+<br> 
+
+### Use look_for to select variables
+```{r}
+
+look_for(df, c("paptype", "RAgeCat"))
+
+```
+
+<br> 
+
+### results as dataframe
+
+`convert_list_columns_to_character` makes the output a normal data frame. However, all values are compresed into one cell. 
+
+```{r}
+
+look_for(df, c("paptype", "RAgeCat")) %>%
+  convert_list_columns_to_character()
+
+```
+
+<br> 
+
+### Results as LONG dataframe (good)
+
+Use 'lookfor_to_long_format' to "transform results with one row per factor level and per value label."
+
+```{r}
+
+look_for(df, c("paptype", "RAgeCat")) %>%
+  lookfor_to_long_format() %>%
+  convert_list_columns_to_character()
+
+```
+
+<br>
+
+### Filter LONG dataframe
+
+Now results can be filtered as normal
+
+```{r}
+
+look_for(df) %>%
+  lookfor_to_long_format() %>%
+  convert_list_columns_to_character() %>% 
+  filter(grepl("sex", label, ignore.case = T))
+
+```
+
+## Display look_for
+
+```{r}
+
+tester <- look_for(df, details = FALSE)
+
+look_h <- function(data, 
+                   print = "h", ## set to f for flextable
+                   capt = NULL,  ## Set to string to use as caption. 
+                   export = NULL ## Set to file location
+                   ){ 
+  
+  ht <- 
+    
+    data |>
+  
+    huxtable::as_hux() %>%
+    
+    ## Applied to all cells
+    ## amount of space on each side of a cell. 
+    huxtable::set_all_padding(1) |> 
+    ## amount of space on each side of a cell. 
+    huxtable::set_outer_padding(1) |>
+    ## decimal place display (works on all numbers found in a cell, even non-numeric data)
+    huxtable::set_number_format(2) |> 
+    ## Font size
+    huxtable::set_font_size(8) |> 
+    ## Font
+    huxtable::set_font("Arial") |>
+    
+    ## Set zero decimal places
+    huxtable::set_number_format(everywhere, value = fmt_pretty(0)) %>%
+    
+    ## Heading formatting
+    ## bold top row (the column names)
+    huxtable::set_bold(row = 1, col = everywhere) |> 
+    ## Add bottom border of row 1, default value = 0.4 points.
+    huxtable::set_bottom_border(row = 1, col = everywhere) |>  
+  
+    ## Right hand border to variable column
+    huxtable::set_right_border(everywhere, ## all rows
+                     2,  ## column 2 (variable name)
+                     brdr(2, "solid", "grey")) |> 
+    
+    ## Set NA string
+    huxtable::set_na_string("-") |>
+  
+    ## External borders only... 
+    huxtable::set_outer_borders(everywhere, everywhere, brdr(1,style = "solid", "black")) |>
+    
+    ## Background colour in even rows to grey, all columns
+    huxtable::set_background_color(evens, everywhere, "grey95") |>
+    
+    ## Right align first column
+    huxtable::set_align(everywhere, everywhere, "left") |>
+    
+    ## Wrap columns (only works when width set to (default is TRUE anyway))
+    huxtable::set_wrap(everywhere, everywhere, TRUE) |>
+    
+    ## Width of the table as a proportion of the available space - here 100%
+    huxtable::set_width(1)
+    
+    ## Add table caption
+    if(!is.null(capt)){ht <- ht |> huxtable::set_caption(capt)} 
+    
+    ## Control column widths, dynamic based on content
+    col_lengths <- apply(ht, 2, function(col) max(nchar(as.character(col))))
+    relative_widths <- col_lengths / sum(col_lengths)
+    huxtable::col_width(ht) <- relative_widths
+    
+    ## Export to Excel? 
+    if (!is.null(export)){
+        
+        wb <- huxtable::as_Workbook(ht = ht, sheet = "lookfor")
+        ## Excel cell locations
+        end_row <- 1 + nrow(data) ## 1 here because huxtable adds header row to number of rows. 
+        end_col <- ncol(data)
+        ## Required to remove row heights set by as_Workbook() - these are problematic
+        removeRowHeights(wb, "lookfor", rows = 2:end_row) 
+        
+        addStyle(wb, 
+             "lookfor", 
+             style = createStyle(wrapText = T), 
+             cols = 2:end_col, 
+             rows = 2:end_row, 
+             gridExpand = TRUE, 
+             stack = T)
+    
+        ## Remove huxtable defined column widths and apply openxlsx standards
+        removeColWidths(wb, "lookfor", cols = 2:end_col)
+        
+        ## Temporary function to identify column width
+        .col_width <- function(huxt) { 
+      
+            ## Extract first row of huxtable
+            header_row_char_length <- 1:ncol(huxt) %>% map(., ~as_tibble(huxt[,.x])) %>% map_int(., ~max(str_length(as_vector(.x))))
+          
+            ## Multiple by number of pixels per character
+            header_proposed_width <- header_row_char_length + 1
+          
+            ## Cut off of 30 imposed, and lower bound of 10. 
+            header_proposed_width_cut_off <- ifelse(header_proposed_width > 50, 50, header_proposed_width)
+            header_proposed_width_cut_off <- ifelse(header_proposed_width_cut_off < 10, 10, header_proposed_width_cut_off)
+            
+          return(header_proposed_width_cut_off)
+          
+          }
+        
+        col_widths <- ht %>% .col_width()
+        setColWidths(wb, "lookfor", cols = 1:end_col, widths = col_widths)
+        saveWorkbook(wb, file = export, overwrite = TRUE)
+    }
+    
+    
+    if(print == "f"){ht <- ht %>% huxtable::as_flextable() %>% flextable::autofit()}
+    
+    return(ht)
+    
+}
+
+tester %>% look_h
+tester %>% look_h("f")
+
+tester %>% look_h("f", export = "/Users/joecrowley/R/Exploratory/lookfor excel.xlsx")
+
+
+```
+
+## look_for with a search filter
+
+```{r}
+
+look_for2 <- function(data, 
+                      filter, 
+                      details = "med", ## high or low
+                      form = F,  ## if T then format
+                      type = "f" ## set "h" for huxtable output
+                      ){
+  
+  results <-
+      look_for(data) %>%
+      convert_list_columns_to_character() %>%
+      filter(grepl(filter, variable, ignore.case = T) |
+             grepl(filter, label, ignore.case = T) |
+             grepl(filter, levels, ignore.case = T) |
+             grepl(filter, value_labels, ignore.case = T)
+             ) 
+  
+  if(details == "med"){
+    results <- results %>% select(pos, variable, label, levels, value_labels)
+  } else if (details == "low") {
+    results <- results %>% select(pos, variable, label)
+  } else if (details == "high") {
+    results <- results %>% select(pos, variable, label)
+  }
+  
+  if(form == T){
+    results <- results %>% look_h(print = type, capt = paste0("Search for: ", filter))
+  }
+    
+  return(results)
+  
+}
+
+df %>% look_for2("age")
+df %>% look_for2("age", details = "low")
+df %>% look_for2(filter = "income", form = T)
+df %>% look_for2(filter = "income", form = T, type = "h")
+ 
+```
+
+
