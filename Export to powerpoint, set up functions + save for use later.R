@@ -1,0 +1,471 @@
+# install.packages("mschart")   # if not already installed
+# install.packages("officer")    # often used together with mscharts
+
+library(tidyverse)
+library(mschart)
+library(officer)
+
+functions_folder <- "I:/Workdocs/Analysis team/Code Standardisation/Code library/Joe/Powerpoint/functions"
+
+
+# ------------------------------------------------------------------------------
+create_empty_ppt <- function(
+    file = "I:/Workdocs/Analysis team/Code Standardisation/Code library/Joe/Powerpoint/NatCen empty slides.pptx"){
+    read_pptx(file) 
+}
+
+ppt <- create_empty_ppt()
+
+writeLines(
+  c("create_empty_ppt <- ", # Assignment needs to be added manually
+    deparse(create_empty_ppt)), # Extract function code
+  paste0(functions_folder,"/create_empty_ppt.R")) # File name is just the function name 
+
+
+
+# ------------------------------------------------------------------------------
+available_style_names <- function(slides){
+  
+  layout_properties(slides) %>% 
+    filter(grepl("mint", name, ignore.case = T) | 
+             name %in% c("Title and full width content",
+                         "Title and two column content",
+                         "Title and full width table with description", 
+                         "Title and full width chart with description",
+                         "Text and chart with source"
+             )) %>%
+    select(name) %>% unique() %>% unlist %>% unname()
+  
+}
+
+available_style_names(ppt)
+
+writeLines(
+  c("available_style_names <- ", # Assignment needs to be added manually
+    deparse(available_style_names)), # Extract function code
+  paste0(functions_folder,"/available_style_names.R")) # File name is just the function name 
+
+
+# ------------------------------------------------------------------------------
+available_styles <- function(slides){
+  
+    layout_properties(slides) %>% 
+    filter(grepl("mint", name, ignore.case = T) | 
+             name %in% c("Title and full width content",
+                         "Title and two column content",
+                         "Title and full width table with description", 
+                         "Title and full width chart with description",
+                         "Text and chart with source"
+             )) %>%
+    select(name, type, type_idx, id, ph_label) 
+  
+}
+
+styles_to_use <- available_styles(ppt)
+styles_to_use %>% filter(name == "Title: Mint Green")
+
+
+writeLines(
+  c("available_styles <- ", # Assignment needs to be added manually
+    deparse(available_styles)), # Extract function code
+  paste0(functions_folder,"/available_styles.R")) # File name is just the function name 
+
+# ------------------------------------------------------------------------------
+# title
+styles_to_use %>% filter(name == "Title: Mint Green")
+
+add_title_slide <- function(slides, title, subtitle = NULL){
+  
+  slides <- slides |>
+    add_slide(layout = "Title: Mint Green", master = "Office Theme") |>
+    ph_with(title, ph_location_label(ph_label = "Text Placeholder 9"))
+  
+  if(!is.null(subtitle)){  slides <- slides |>
+    ph_with(subtitle, ph_location_label(ph_label = "Subtitle 2"))
+  }
+  
+}
+
+# Example... 
+ppt <- add_title_slide(
+  ppt, 
+  title = "Title text example", 
+  subtitle = c("Can you have multiple strings","in the subtitle?"))
+# You can, if your subtitle vector has multiple elements the resulting 
+# subtitle is split over multiple lines. 
+
+
+writeLines(
+  c("add_title_slide <- ", # Assignment needs to be added manually
+    deparse(add_title_slide)), # Extract function code
+  paste0(functions_folder,"/add_title_slide.R")) # File name is just the function name 
+
+
+
+# ------------------------------------------------------------------------------
+# divider slide
+styles_to_use %>% filter(name == "Divider: Mint Green")
+
+add_divider_slide <- function(slides, text, footer = NULL, header = NULL){
+  
+  slides <- slides |>
+    add_slide(layout = "Divider: Mint Green", master = "Office Theme") |>
+    ph_with(text, ph_location_label(ph_label = "Text Placeholder 9"))
+    
+  if(!is.null(footer)){  slides <- slides |>
+    ph_with(footer, ph_location_label(ph_label = "Straight Connector 3")) 
+  }
+  
+  if(!is.null(header)){  slides <- slides |>
+    ph_with(header, ph_location_label(ph_label = "Subtitle 2")) # alleged subtitle, not really. 
+  }
+  
+}
+
+# Example... 
+ppt <- add_divider_slide(
+  ppt, 
+  text = "Title for divider slide", 
+  footer = c("Can you have multiple strings in the footer?", "Yes, but they'll appear off screen"), 
+  header = "Header")
+
+
+
+writeLines(
+  c("add_divider_slide <- ", # Assignment needs to be added manually
+    deparse(add_divider_slide)), # Extract function code
+  paste0(functions_folder,"/add_divider_slide.R")) # File name is just the function name 
+
+
+
+# ------------------------------------------------------------------------------
+# Title and full width content 
+styles_to_use %>% filter(name == "Title and full width content")
+
+full_width_content_slide <- function(slides, title, text, footer = NULL){
+  
+  slides <- slides |>
+    add_slide(layout = "Title and full width content", master = "Office Theme") |>
+    ph_with(title, ph_location_label(ph_label = "Title 1")) |>
+    ph_with(text, ph_location_label(ph_label = "Content Placeholder 2")) 
+    
+  
+  if(!is.null(footer)){  slides <- slides |>
+    ph_with(footer, ph_location_label(ph_label = "Footer Placeholder 4")) 
+  }
+
+  
+}
+
+# Weirdly, you don't seem to need to assign the output to an object for it to 
+# updated. Which is good. But how / why / what the fuck? 
+full_width_content_slide(
+  slides = ppt, 
+  title = "Title", 
+  text = c("Test text", "test", "living"), 
+  footer = "Footer"
+)
+
+
+writeLines(
+  c("full_width_content_slide <- ", # Assignment needs to be added manually
+    deparse(full_width_content_slide)), # Extract function code
+  paste0(functions_folder,"/full_width_content_slide.R")) # File name is just the function name 
+
+
+# ------------------------------------------------------------------------------
+# Title and two column content 
+styles_to_use %>% filter(name == "Title and two column content")
+
+double_text_column_slide <- function(slides, title, left_text = NULL, right_text = NULL, footer = NULL){
+  
+  slides <- slides |>
+    add_slide(layout = "Title and two column content", master = "Office Theme") |>
+    ph_with(title, ph_location_label(ph_label = "Title 1")) 
+  
+  if(!is.null(left_text)){  slides <- slides |>
+    ph_with(left_text, ph_location_type(type = "body", type_idx = 1))  
+  }
+  
+  if(!is.null(right_text)){  slides <- slides |>
+    ph_with(right_text, ph_location_type(type = "body", type_idx = 2))
+  }
+  
+  if(!is.null(footer)){  slides <- slides |>
+    ph_with(footer, ph_location_label(ph_label = "Footer Placeholder 4")) 
+  }
+  
+}
+
+double_text_column_slide(
+  slides = ppt, 
+  title = "Title", 
+  left_text = c("Left_text", "test", "living"), 
+  right_text = c("Right text", "test", "living"), 
+  footer = "Footer"
+)
+
+writeLines(
+  c("double_text_column_slide <- ", # Assignment needs to be added manually
+    deparse(double_text_column_slide)), # Extract function code
+  paste0(functions_folder,"/double_text_column_slide.R")) # File name is just the function name 
+
+
+# ------------------------------------------------------------------------------
+# Title and full width table with description
+styles_to_use %>% filter(name == "Title and full width table with description")
+# Max height of table space - 8.42cm, converted to 3.314961 inches in code below
+# Max width of table space - 30.86cm
+
+# use for big tables only really. 
+ft_mtcars <- mtcars %>% rownames_to_column() %>% slice(1:15) %>% flextable::flextable() %>% flextable::theme_zebra() %>% flextable::autofit()
+
+ft_mtcars %>% 
+  flextable::fit_to_width(max_width = 30.86, unit = "cm") # But not height constraining equivalent
+
+# Helper function to limit export height. 
+# This is a chatgpt functions, it requires measurement in inches, unclear to me why. 
+fit_to_height <- function(ft, max_height, add_header = TRUE) {
+  
+  # --- Step 1: compute "natural" table height in inches
+  # flextable dims are in inches
+  dims <- flextable::flextable_dim(ft)
+  natural_height <- dims$height
+  
+  # --- Step 2: reduce padding if needed
+  if (natural_height > max_height) {
+    ft <- flextable::padding(ft, padding.top = 1, padding.bottom = 1, part = "all")
+    
+    # recompute dimensions after padding shrink
+    dims <- flextable::flextable_dim(ft)
+    natural_height <- dims$height
+  }
+  
+  # Count rows (optionally include header)
+  if (natural_height > max_height) {
+    
+    n_rows <- flextable::nrow_part(ft, part = "body")
+    if (add_header) {
+      n_rows <- n_rows + flextable::nrow_part(ft, part = "header")
+    }
+    
+    # Compute uniform row height
+    row_height <- max_height / n_rows
+  
+    # Apply height to all parts
+    ft <- flextable::height_all(ft, height = row_height)
+  }
+  
+  return(ft)
+}
+
+
+ft_mtcars %>% 
+   fit_to_height(max_height = 3.314961) %>% 
+   flextable::fit_to_width(max_width = 30.86, unit = "cm")
+
+
+full_width_table_slide <- function(slides, title, text, table, footer = NULL, control_height = T){
+  
+  if(control_height == T){
+  table_height_managed <- table %>% 
+    fit_to_height(max_height = 3.314961) %>% 
+    flextable::fit_to_width(max_width = 30.86, unit = "cm")
+  } else {table_height_managed <- table}
+  
+  slides <- slides |>
+    add_slide(layout = "Title and full width table with description", master = "Office Theme") |>
+    ph_with(title, ph_location_label(ph_label = "Title 1")) |>
+    ph_with(text, ph_location_type(type = "body")) |>
+    ph_with(table_height_managed, ph_location_type(type = "tbl"))
+  
+  if(!is.null(footer)){ slides <- slides |>
+    ph_with(footer, ph_location_label(ph_label = "Footer Placeholder 4")) 
+  }
+  
+}
+
+full_width_table_slide(
+  slides = ppt, 
+  title = "Full width table slide", 
+  text = c("Description text","Here table is shrunk a bit to fit", "if table too big, still wont' fit"),
+  table = ft_mtcars, 
+  footer = "Footer text"
+)
+
+full_width_table_slide(
+  slides = ppt, 
+  title = "Full width table slide", 
+  text = "Description text. Here is an unshrunk table, too big",
+  table = ft_mtcars, 
+  footer = "Footer text", 
+  control_height = F
+)
+
+writeLines(
+  c("full_width_table_slide <- ", # Assignment needs to be added manually
+    deparse(full_width_table_slide)), # Extract function code
+  paste0(functions_folder,"/full_width_table_slide.R")) # File name is just the function name 
+
+writeLines(
+  c("fit_to_height <- ", # Assignment needs to be added manually
+    deparse(fit_to_height)), # Extract function code
+  paste0(functions_folder,"/fit_to_height.R")) # File name is just the function name 
+
+# ------------------------------------------------------------------------------
+# And also a flextable set up function... 
+# Converts a dataframe to a flextable
+# Position other flextable edits after this... 
+
+# Set caption to a character string with the title.
+# make_flex <- function(df, caption = F, digits = 0) { 
+#   
+#   table_width <- ncol(df)
+#   
+#   ft <- df %>% 
+#     flextable::flextable() %>%
+#     flextable::set_table_properties(layout = 'autofit', width = 1) %>%
+#     flextable::theme_zebra(
+#       odd_header = "grey90",
+#       odd_body = "white",
+#       even_body = "#f3f8fc"   # very gentle light blue
+#     ) %>%
+#       flextable::hline(i = 1, part = "header", border = fp_border(color = "black", width = 1)) %>% 
+#       flextable::hline_bottom(part = "body", border = fp_border(color = "black", width = 1)) %>% 
+#     flextable::colformat_double(digits = digits)
+#   
+#   if(caption != F){
+#     ft <- ft %>% flextable::add_header_row(values = caption, colwidths = table_width)
+#   }
+#   
+#   return(ft)
+#   
+# }
+
+make_flex <- function(df, caption = F, digits = 0) { 
+  
+  table_width <- ncol(df)
+  
+  ft <- df %>% 
+    flextable::flextable() %>%
+    flextable::set_table_properties(layout = 'autofit', width = 1) %>%
+    flextable::theme_zebra(
+      odd_header = "grey90",
+      odd_body = "white",
+      even_body = "#f3f8fc"   # very gentle light blue
+    ) %>%
+    border(part = "body", border = fp_border(color = "grey80", width = 1)) %>%
+    flextable::hline(i = 1, part = "header", border = fp_border(color = "black", width = 1)) %>% 
+    flextable::hline_bottom(part = "body", border = fp_border(color = "black", width = 1)) %>% 
+    flextable::colformat_double(digits = digits)
+  
+  if(caption != F){
+    ft <- ft %>% flextable::set_caption(caption = caption,
+                                        autonum = run_autonum(seq_id = "tab"),
+                                        word_stylename = "Table: Heading row_"
+                                        )
+  }
+  
+  return(ft)
+  
+}
+
+mtcars %>% rownames_to_column() %>% slice(1:15) %>% make_flex()
+
+
+writeLines(
+  c("make_flex <- ", # Assignment needs to be added manually
+    deparse(make_flex)), # Extract function code
+  paste0(functions_folder,"/make_flex.R")) # File name is just the function name 
+
+
+
+# ------------------------------------------------------------------------------
+# Title and full width chart with description
+styles_to_use %>% filter(name == "Title and full width chart with description")
+
+# Create a bar chart
+chart_example <- ms_barchart(
+  data = mtcars %>% rownames_to_column() %>% slice(1:8),
+  x = "rowname",
+  y = "mpg"
+)
+
+full_width_chart_slide <- function(slides, title, text = NULL, chart, source = NULL, footer = NULL){
+  
+  slides <- slides |>
+    add_slide(layout = "Title and full width chart with description", master = "Office Theme") |>
+    ph_with(title, ph_location_label(ph_label = "Title 1")) |>
+    ph_with(chart, ph_location_type(type = "chart"))
+  
+  if(!is.null(text)){slides <- slides |>
+    ph_with(text, ph_location_type(type = "body", type_idx = 1)) 
+  }
+    
+  if(!is.null(source)){slides <- slides |>
+    ph_with(source, ph_location_type(type = "body", type_idx = 2))
+  }
+  
+  if(!is.null(footer)){slides <- slides |>
+    ph_with(footer, ph_location_label(ph_label = "Footer Placeholder 4")) 
+  }
+  
+}
+
+full_width_chart_slide(
+  slides = ppt, 
+  title = "Title for full width chart with description", 
+  text = c("The description text", "spread over lines"), 
+  chart = chart_example,
+  source = "Source text", 
+  footer = "Footer for chart"
+)
+
+writeLines(
+  c("full_width_chart_slide <- ", # Assignment needs to be added manually
+    deparse(full_width_chart_slide)), # Extract function code
+  paste0(functions_folder,"/full_width_chart_slide.R")) # File name is just the function name 
+
+
+# ------------------------------------------------------------------------------
+# Text on one side and chart on the other
+styles_to_use %>% filter(name == "Text and chart with source")
+
+text_and_chart_slide <- function(slides, title, text, chart, source = NULL, footer = NULL){
+  
+  slides <- slides |>
+    add_slide(layout = "Text and chart with source", master = "Office Theme") |>
+    ph_with(title, ph_location_label(ph_label = "Title 1")) |>
+    ph_with(text, ph_location_type(type = "body", type_idx = 1), ) |>
+    ph_with(chart, ph_location_type(type = "chart"))
+  
+  if(!is.null(source)){slides <- slides |>
+    ph_with(source, ph_location_type(type = "body", type_idx = 2)) 
+  }
+    
+  if(!is.null(footer)){slides <- slides |>
+    ph_with(footer, ph_location_label(ph_label = "Footer Placeholder 4")) 
+  }
+  
+}
+
+text_and_chart_slide(
+  slides = ppt, 
+  title = "Slide with one column of text and one chart", 
+  text = "The column of text", 
+  chart = chart_example, 
+  source = "Chart source", 
+  footer = "Footer for slide"
+)
+
+writeLines(
+  c("text_and_chart_slide <- ", # Assignment needs to be added manually
+    deparse(text_and_chart_slide)), # Extract function code
+  paste0(functions_folder,"/text_and_chart_slide.R")) # File name is just the function name 
+
+
+
+# ------------------------------------------------------------------------------
+# Save output here
+print(ppt, target = "NatCen example PowerPoint from functions.pptx")
+
