@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.27">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>4&nbsp; Frequency function for SPSS – Exploratory analysis in R</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./Overview of SPSS data.html" rel="next">
+<link href="./Data dictionary.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-27c261d06b905028a18691de25d09dde.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<link href="site_libs/tabwid-1.1.3/tabwid.css" rel="stylesheet">
+<script src="site_libs/tabwid-1.1.3/tabwid.js"></script>
+
+
+<link rel="stylesheet" href="dense-notes.css">
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./look_for.html">Dataset overview</a></li><li class="breadcrumb-item"><a href="./Frequency function for SPSS.html"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Frequency function for SPSS</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Exploratory analysis in R</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Exploratory analysis in R</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Dataset overview</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./look_for.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">look_for2</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Data dictionary.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Data dictionary</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Frequency function for SPSS.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Frequency function for SPSS</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Overview of SPSS data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Overview of SPSS data</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Exporting results</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./export_to_powerpoint.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Export to PowerPoint</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#package-set-up" id="toc-package-set-up" class="nav-link active" data-scroll-target="#package-set-up"><span class="header-section-number">4.1</span> Package set up</a></li>
+  <li><a href="#freq_spss" id="toc-freq_spss" class="nav-link" data-scroll-target="#freq_spss"><span class="header-section-number">4.2</span> freq_spss</a>
+  <ul class="collapse">
+  <li><a href="#what-the-function-does" id="toc-what-the-function-does" class="nav-link" data-scroll-target="#what-the-function-does"><span class="header-section-number">4.2.1</span> What the function does</a></li>
+  <li><a href="#how-the-code-works" id="toc-how-the-code-works" class="nav-link" data-scroll-target="#how-the-code-works"><span class="header-section-number">4.2.2</span> How the code works</a></li>
+  </ul></li>
+  <li><a href="#trials" id="toc-trials" class="nav-link" data-scroll-target="#trials"><span class="header-section-number">4.3</span> Trials</a>
+  <ul class="collapse">
+  <li><a href="#basic-application" id="toc-basic-application" class="nav-link" data-scroll-target="#basic-application"><span class="header-section-number">4.3.1</span> Basic application</a></li>
+  <li><a href="#with-formatting" id="toc-with-formatting" class="nav-link" data-scroll-target="#with-formatting"><span class="header-section-number">4.3.2</span> With formatting</a></li>
+  <li><a href="#illustration-of-what-happens-when-some-values-have-no-labels" id="toc-illustration-of-what-happens-when-some-values-have-no-labels" class="nav-link" data-scroll-target="#illustration-of-what-happens-when-some-values-have-no-labels"><span class="header-section-number">4.3.3</span> Illustration of what happens when some values have no labels…</a></li>
+  </ul></li>
+  <li><a href="#write-function" id="toc-write-function" class="nav-link" data-scroll-target="#write-function"><span class="header-section-number">4.4</span> Write function</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content column-body" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./look_for.html">Dataset overview</a></li><li class="breadcrumb-item"><a href="./Frequency function for SPSS.html"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Frequency function for SPSS</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Frequency function for SPSS</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta column-body">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>Access function: <a href="Scripts/freq_spss.R">Data dictionary</a>.</p>
+<section id="package-set-up" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="package-set-up"><span class="header-section-number">4.1</span> Package set up</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(haven)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="do">## ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="do">## ✔ dplyr     1.1.4     ✔ readr     2.1.5</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="do">## ✔ forcats   1.0.0     ✔ stringr   1.5.1</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="do">## ✔ ggplot2   4.0.0     ✔ tibble    3.2.1</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="do">## ✔ lubridate 1.9.4     ✔ tidyr     1.3.1</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="do">## ✔ purrr     1.0.4     </span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="do">## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="do">## ✖ dplyr::filter() masks stats::filter()</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="do">## ✖ dplyr::lag()    masks stats::lag()</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="do">## ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(labelled)</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(flextable)</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="do">## Attaching package: 'flextable'</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="do">## The following object is masked from 'package:purrr':</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="do">##     compose</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(huxtable)</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="do">## Attaching package: 'huxtable'</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="do">## The following objects are masked from 'package:flextable':</span></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a><span class="do">##     align, as_flextable, bold, font, height, italic, set_caption,</span></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a><span class="do">##     valign, width</span></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a><span class="do">## The following object is masked from 'package:dplyr':</span></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a><span class="do">##     add_rownames</span></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a><span class="do">## The following object is masked from 'package:ggplot2':</span></span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a><span class="do">##     theme_grey</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load BSA teaching data</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">read_sav</span>(<span class="st">'/Users/joecrowley/R/Data/BSA Teaching Data/spss/spss25/bsa2019_poverty_open.sav'</span>, <span class="at">user_na =</span> T)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>df <span class="sc">%&gt;%</span> </span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(welfare2, leftrigh, libauth, RSex, RAgeCat) <span class="sc">%&gt;%</span> </span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">look_for</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="huxtable" data-quarto-disable-processing="true" style="border-collapse: collapse; border: 0px; margin-bottom: 2em; margin-top: 2em; ; margin-left: auto; margin-right: auto;  " id="tab:load data">
+<colgroup><col><col><col><col><col><col><col></colgroup><tbody><tr>
+<th style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0.4pt 0pt 0.4pt 0.4pt;    padding: 6pt 6pt 6pt 6pt; font-weight: bold;">pos</th><th style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0.4pt 0pt 0.4pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: bold;">variable</th><th style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0.4pt 0pt 0.4pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: bold;">label</th><th style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0.4pt 0pt 0.4pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: bold;">col_type</th><th style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0.4pt 0pt 0.4pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: bold;">missing</th><th style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0.4pt 0pt 0.4pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: bold;">levels</th><th style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0.4pt 0.4pt 0.4pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: bold;">value_labels</th></tr>
+<tr>
+<td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0.4pt 0pt 0pt 0.4pt;    padding: 6pt 6pt 6pt 6pt; background-color: rgb(242, 242, 242); font-weight: normal;">1</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0.4pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; background-color: rgb(242, 242, 242); font-weight: normal;">welfare2</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0.4pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; background-color: rgb(242, 242, 242); font-weight: normal;">Welfarism scale (welfhelp to proudwlf) dv</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0.4pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; background-color: rgb(242, 242, 242); font-weight: normal;">dbl+lbl</td><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0.4pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; background-color: rgb(242, 242, 242); font-weight: normal;">642</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0.4pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; background-color: rgb(242, 242, 242); font-weight: normal;">NULL</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0.4pt 0.4pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; background-color: rgb(242, 242, 242); font-weight: normal;">c(`skip, didn`t return SC questionnaire` = -1, sympathetic = 1, `poor don`t deserve` = 5, `Missing values` = 9)</td></tr>
+<tr>
+<td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0.4pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">2</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">leftrigh</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">Left-right scale (redistrb to indust4) dv</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">dbl+lbl</td><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">645</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">NULL</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0.4pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">c(`skip, didn`t return SC questionnaire` = -1, left = 1, right = 5, `Missing values` = 9)</td></tr>
+<tr>
+<td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0.4pt;    padding: 6pt 6pt 6pt 6pt; background-color: rgb(242, 242, 242); font-weight: normal;">3</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; background-color: rgb(242, 242, 242); font-weight: normal;">libauth</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; background-color: rgb(242, 242, 242); font-weight: normal;">Libertarian-authoritarian scale (TradVals to censor) dv</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; background-color: rgb(242, 242, 242); font-weight: normal;">dbl+lbl</td><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; background-color: rgb(242, 242, 242); font-weight: normal;">637</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; background-color: rgb(242, 242, 242); font-weight: normal;">NULL</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0.4pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; background-color: rgb(242, 242, 242); font-weight: normal;">c(`skip, didn`t return SC questionnaire` = -1, libertarian = 1, authoritarian = 5, `Missing values` = 9)</td></tr>
+<tr>
+<td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0.4pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">4</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">RSex</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">Sex of respondent</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">dbl+lbl</td><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">0</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">NULL</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0.4pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">c(`Item not applicable` = -1, Male = 1, Female = 2, `Don`t know` = 8, Refusal = 9)</td></tr>
+<tr>
+<td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0.4pt 0.4pt;    padding: 6pt 6pt 6pt 6pt; background-color: rgb(242, 242, 242); font-weight: normal;">5</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0.4pt 0pt;    padding: 6pt 6pt 6pt 6pt; background-color: rgb(242, 242, 242); font-weight: normal;">RAgeCat</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0.4pt 0pt;    padding: 6pt 6pt 6pt 6pt; background-color: rgb(242, 242, 242); font-weight: normal;">Age of respondent(grouped)&lt;7 category&gt; dv</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0.4pt 0pt;    padding: 6pt 6pt 6pt 6pt; background-color: rgb(242, 242, 242); font-weight: normal;">dbl+lbl</td><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0.4pt 0pt;    padding: 6pt 6pt 6pt 6pt; background-color: rgb(242, 242, 242); font-weight: normal;">6</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0.4pt 0pt;    padding: 6pt 6pt 6pt 6pt; background-color: rgb(242, 242, 242); font-weight: normal;">NULL</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0.4pt 0.4pt 0pt;    padding: 6pt 6pt 6pt 6pt; background-color: rgb(242, 242, 242); font-weight: normal;">c(`Item not applicable` = -1, `18-24` = 1, `25-34` = 2, `35-44` = 3, `45-54` = 4, `55-59` = 5, `60-64` = 6, `65+` = 7, `DK/Refused/Not answered` = 8)</td></tr>
+</tbody></table>
+</div>
+</div>
+<p><br></p>
+</section>
+<section id="freq_spss" class="level2" data-number="4.2">
+<h2 data-number="4.2" class="anchored" data-anchor-id="freq_spss"><span class="header-section-number">4.2</span> freq_spss</h2>
+<section id="what-the-function-does" class="level3" data-number="4.2.1">
+<h3 data-number="4.2.1" class="anchored" data-anchor-id="what-the-function-does"><span class="header-section-number">4.2.1</span> What the function does</h3>
+<p><code>freq_spss()</code> produces a frequency table for a labelled survey variable, modelled on the output style of SPSS. It is designed for use with <strong>haven-imported datasets</strong>, where variables carry value labels, variable labels, and user-defined missing values (user NAs) — metadata that ordinary R frequency tools ignore.</p>
+<p>The output distinguishes three kinds of rows:</p>
+<ul>
+<li><strong>Valid responses</strong> — cases with a recognised, non-missing value. These rows show frequency, percentage of valid cases, and cumulative percentage within valid cases.</li>
+<li><strong>User-defined missing values</strong> — codes the researcher has flagged as missing (e.g.&nbsp;“Don’t know”, “Refused”) but which are tracked separately rather than silently dropped. These rows show frequency only.</li>
+<li><strong>Total columns</strong> — percentage and cumulative percentage computed across <em>all</em> rows (valid + user NAs combined), replicating the “Total %” column familiar from SPSS output.</li>
+</ul>
+<p>The result is either a plain <strong>tibble</strong> (for downstream manipulation) or a formatted <strong>flextable</strong> (for Word reports or RMarkdown output), depending on the <code>as_flextable</code> argument.</p>
+<hr>
+</section>
+<section id="how-the-code-works" class="level3" data-number="4.2.2">
+<h3 data-number="4.2.2" class="anchored" data-anchor-id="how-the-code-works"><span class="header-section-number">4.2.2</span> How the code works</h3>
+<section id="input-validation-and-setup" class="level4" data-number="4.2.2.1">
+<h4 data-number="4.2.2.1" class="anchored" data-anchor-id="input-validation-and-setup"><span class="header-section-number">4.2.2.1</span> 1. Input validation and setup</h4>
+<p>The function begins with a simple data frame check, then extracts the target variable as a plain vector using <code>pull()</code>. A descriptive column label is constructed by combining the R variable name with the haven variable label (<code>var_label()</code>).</p>
+</section>
+<section id="three-factor-views" class="level4" data-number="4.2.2.2">
+<h4 data-number="4.2.2.2" class="anchored" data-anchor-id="three-factor-views"><span class="header-section-number">4.2.2.2</span> 2. Three factor views</h4>
+<p>The variable is converted into factors three times, each serving a different purpose:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Object</th>
+<th>Contents</th>
+<th>How produced</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>var_all</code></td>
+<td>All values including user NAs</td>
+<td><code>to_factor(levels = "prefixed")</code></td>
+</tr>
+<tr class="even">
+<td><code>var_no_NA</code></td>
+<td>Valid values only</td>
+<td><code>to_factor(..., user_na_to_na = TRUE)</code></td>
+</tr>
+<tr class="odd">
+<td><code>var_only_NA</code></td>
+<td>User-NA values only</td>
+<td>Subset raw variable to <code>na_values</code> attribute, then convert</td>
+</tr>
+</tbody>
+</table>
+<p>The <code>levels = "prefixed"</code> argument produces labels in the form <code>[1] Yes</code>, which preserves the numeric code alongside the label text.</p>
+</section>
+<section id="three-sub-tables-then-joined" class="level4" data-number="4.2.2.3">
+<h4 data-number="4.2.2.3" class="anchored" data-anchor-id="three-sub-tables-then-joined"><span class="header-section-number">4.2.2.3</span> 3. Three sub-tables, then joined</h4>
+<p>Rather than a single computation, the table is assembled from three separate tibbles that are then joined:</p>
+<ul>
+<li><strong><code>valid_tbl</code></strong> — counts and proportions of non-missing cases, with cumulative % computed at this stage (so it runs only over valid rows).</li>
+<li><strong><code>user_na_tbl</code></strong> — counts only, for user-NA rows.</li>
+<li><strong><code>total_tbl</code></strong> — proportions across all rows combined.</li>
+</ul>
+<p>These are joined sequentially with explicit <code>full_join(..., by = "f")</code> calls. The <code>n</code> and <code>type</code> columns that collide across joins are resolved with <code>coalesce()</code>. Rows are then <code>arrange()</code>d to put valid cases first before <code>cumsum()</code> computes the total cumulative percentage, ensuring stable ordering.</p>
+</section>
+<section id="label-deduplication" class="level4" data-number="4.2.2.4">
+<h4 data-number="4.2.2.4" class="anchored" data-anchor-id="label-deduplication"><span class="header-section-number">4.2.2.4</span> 4. Label deduplication</h4>
+<p>Haven’s prefix format (<code>[1] Yes</code>) can produce redundant labels for unlabelled numeric variables, where a value like <code>1</code> gets labelled <code>[1] 1</code>. The function detects this by splitting each level on <code>]</code> and comparing the left (value) and right (label) parts. Where they match, the prefix is stripped. A deduplication step guards against duplicate names in the recoding vector, which would otherwise trigger a warning from <code>fct_recode()</code>.</p>
+</section>
+<section id="output" class="level4" data-number="4.2.2.5">
+<h4 data-number="4.2.2.5" class="anchored" data-anchor-id="output"><span class="header-section-number">4.2.2.5</span> 5. Output</h4>
+<p>The <code>type</code> column and the generic <code>f</code> column name are tidied up — <code>f</code> is replaced by the descriptive variable label. If <code>as_flextable = TRUE</code>, the tibble is passed to an internal helper <code>.freq_format_table()</code>, which applies row shading (blue for valid, grey for user NAs), human-readable column headers, right-alignment, and vertical dividers.</p>
+<p><em>Requires: <code>dplyr</code>, <code>forcats</code>, <code>stringr</code>, <code>purrr</code>, <code>labelled</code>, <code>flextable</code></em></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">#' Generate an SPSS-style frequency table for a labelled variable</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co">#'</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co">#' @param data        A data frame containing the variable of interest.</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co">#' @param var         The (unquoted) variable to tabulate.</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co">#' @param as_flextable Logical. If TRUE, returns a formatted flextable;</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co">#'                    otherwise returns a plain tibble. Default: FALSE.</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co">#' @return A tibble or flextable with frequency, percentage, cumulative %,</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co">#'         and totals, with user-defined missing values distinguished from</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="co">#'         valid values.</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>freq_spss <span class="ot">&lt;-</span> <span class="cf">function</span>(data, var, <span class="at">as_flextable =</span> <span class="cn">FALSE</span>) {</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>  <span class="co"># ── Input validation ─────────────────────────────────────────────────────────</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="sc">!</span><span class="fu">is.data.frame</span>(data)) <span class="fu">stop</span>(<span class="st">"`data` must be a data frame."</span>)</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>  <span class="co"># ── 1. Extract the raw variable and build a descriptive column label ──────────</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>  variable <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">pull</span>({{var}})</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>  label <span class="ot">&lt;-</span> <span class="fu">paste0</span>(</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>    data <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">select</span>({{var}}) <span class="sc">%&gt;%</span> names,</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>    <span class="st">" - "</span>,</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>    labelled<span class="sc">::</span><span class="fu">var_label</span>(variable)</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>  <span class="co"># ── 2. Build three views of the variable as factors ───────────────────────────</span></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>  var_all <span class="ot">&lt;-</span> variable <span class="sc">%&gt;%</span> labelled<span class="sc">::</span><span class="fu">to_factor</span>(<span class="at">levels =</span> <span class="st">"prefixed"</span>) <span class="sc">%&gt;%</span> forcats<span class="sc">::</span><span class="fu">fct_drop</span>()</span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>  var_no_NA <span class="ot">&lt;-</span> variable <span class="sc">%&gt;%</span> labelled<span class="sc">::</span><span class="fu">to_factor</span>(<span class="at">levels =</span> <span class="st">"prefixed"</span>, <span class="at">user_na_to_na =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span> forcats<span class="sc">::</span><span class="fu">fct_drop</span>()</span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>  user_na_vals <span class="ot">&lt;-</span> <span class="fu">attr</span>(variable, <span class="st">"na_values"</span>)</span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">is.null</span>(user_na_vals) <span class="sc">||</span> <span class="fu">length</span>(user_na_vals) <span class="sc">==</span> <span class="dv">0</span>) {</span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>    var_only_NA <span class="ot">&lt;-</span> <span class="fu">factor</span>(<span class="fu">character</span>(<span class="dv">0</span>))</span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>    var_only_NA <span class="ot">&lt;-</span> variable[variable <span class="sc">%in%</span> user_na_vals] <span class="sc">%&gt;%</span></span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>      labelled<span class="sc">::</span><span class="fu">to_factor</span>(<span class="at">levels =</span> <span class="st">"prefixed"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>      forcats<span class="sc">::</span><span class="fu">fct_drop</span>()</span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a>  <span class="co"># ── 3. Build the frequency table by joining three sub-tables ──────────────────</span></span>
+<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a>  valid_tbl <span class="ot">&lt;-</span> var_no_NA <span class="sc">%&gt;%</span></span>
+<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a>    stats<span class="sc">::</span><span class="fu">na.omit</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a>    forcats<span class="sc">::</span><span class="fu">fct_count</span>(<span class="at">prop =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(f)) <span class="sc">%&gt;%</span></span>
+<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
+<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a>      <span class="at">cum_p =</span> <span class="fu">paste0</span>(<span class="fu">round</span>(<span class="fu">cumsum</span>(p) <span class="sc">*</span> <span class="dv">100</span>, <span class="dv">2</span>), <span class="st">"%"</span>),</span>
+<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a>      <span class="at">p     =</span> <span class="fu">paste0</span>(<span class="fu">round</span>(p <span class="sc">*</span> <span class="dv">100</span>, <span class="dv">2</span>), <span class="st">"%"</span>),</span>
+<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a>      <span class="at">type  =</span> <span class="st">"valid"</span></span>
+<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a>  user_na_tbl <span class="ot">&lt;-</span> var_only_NA <span class="sc">%&gt;%</span></span>
+<span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a>    forcats<span class="sc">::</span><span class="fu">fct_count</span>(<span class="at">prop =</span> <span class="cn">FALSE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb3-52"><a href="#cb3-52" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">type =</span> <span class="st">"user_na"</span>)</span>
+<span id="cb3-53"><a href="#cb3-53" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb3-54"><a href="#cb3-54" aria-hidden="true" tabindex="-1"></a>  total_tbl <span class="ot">&lt;-</span> var_all <span class="sc">%&gt;%</span></span>
+<span id="cb3-55"><a href="#cb3-55" aria-hidden="true" tabindex="-1"></a>    forcats<span class="sc">::</span><span class="fu">fct_count</span>(<span class="at">prop =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb3-56"><a href="#cb3-56" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="sc">-</span>n) <span class="sc">%&gt;%</span></span>
+<span id="cb3-57"><a href="#cb3-57" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">rename</span>(<span class="at">total_p =</span> p)</span>
+<span id="cb3-58"><a href="#cb3-58" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb3-59"><a href="#cb3-59" aria-hidden="true" tabindex="-1"></a>  table <span class="ot">&lt;-</span> valid_tbl <span class="sc">%&gt;%</span></span>
+<span id="cb3-60"><a href="#cb3-60" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">full_join</span>(user_na_tbl, <span class="at">by =</span> <span class="st">"f"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb3-61"><a href="#cb3-61" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">full_join</span>(total_tbl,   <span class="at">by =</span> <span class="st">"f"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb3-62"><a href="#cb3-62" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
+<span id="cb3-63"><a href="#cb3-63" aria-hidden="true" tabindex="-1"></a>      <span class="at">n    =</span> dplyr<span class="sc">::</span><span class="fu">coalesce</span>(n.x, n.y),</span>
+<span id="cb3-64"><a href="#cb3-64" aria-hidden="true" tabindex="-1"></a>      <span class="at">type =</span> dplyr<span class="sc">::</span><span class="fu">coalesce</span>(type.x, type.y)</span>
+<span id="cb3-65"><a href="#cb3-65" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span></span>
+<span id="cb3-66"><a href="#cb3-66" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="sc">-</span>n.x, <span class="sc">-</span>n.y, <span class="sc">-</span>type.x, <span class="sc">-</span>type.y) <span class="sc">%&gt;%</span></span>
+<span id="cb3-67"><a href="#cb3-67" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">arrange</span>(<span class="fu">desc</span>(type <span class="sc">==</span> <span class="st">"valid"</span>), f) <span class="sc">%&gt;%</span></span>
+<span id="cb3-68"><a href="#cb3-68" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
+<span id="cb3-69"><a href="#cb3-69" aria-hidden="true" tabindex="-1"></a>      <span class="at">cum_p_total =</span> <span class="fu">paste0</span>(<span class="fu">round</span>(<span class="fu">cumsum</span>(total_p) <span class="sc">*</span> <span class="dv">100</span>, <span class="dv">2</span>), <span class="st">"%"</span>),</span>
+<span id="cb3-70"><a href="#cb3-70" aria-hidden="true" tabindex="-1"></a>      <span class="at">total_p     =</span> <span class="fu">paste0</span>(<span class="fu">round</span>(total_p <span class="sc">*</span> <span class="dv">100</span>, <span class="dv">2</span>), <span class="st">"%"</span>)</span>
+<span id="cb3-71"><a href="#cb3-71" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span></span>
+<span id="cb3-72"><a href="#cb3-72" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">select</span>(type, f, n, p, cum_p, total_p, cum_p_total) </span>
+<span id="cb3-73"><a href="#cb3-73" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb3-74"><a href="#cb3-74" aria-hidden="true" tabindex="-1"></a>  <span class="co"># ── 4. Clean up factor level labels ───────────────────────────────────────────</span></span>
+<span id="cb3-75"><a href="#cb3-75" aria-hidden="true" tabindex="-1"></a>  labels_full          <span class="ot">&lt;-</span> table <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">pull</span>(f)</span>
+<span id="cb3-76"><a href="#cb3-76" aria-hidden="true" tabindex="-1"></a>  max_break_appearance <span class="ot">&lt;-</span> labels_full <span class="sc">%&gt;%</span> <span class="fu">as.character</span>() <span class="sc">%&gt;%</span> stringr<span class="sc">::</span><span class="fu">str_count</span>(<span class="st">"]"</span>) <span class="sc">%&gt;%</span> max</span>
+<span id="cb3-77"><a href="#cb3-77" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb3-78"><a href="#cb3-78" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (max_break_appearance <span class="sc">==</span> <span class="dv">1</span> <span class="sc">&amp;&amp;</span> <span class="fu">length</span>(labels_full) <span class="sc">&gt;</span> <span class="dv">0</span>){</span>
+<span id="cb3-79"><a href="#cb3-79" aria-hidden="true" tabindex="-1"></a>    splits     <span class="ot">&lt;-</span> labels_full <span class="sc">%&gt;%</span> stringr<span class="sc">::</span><span class="fu">str_split</span>(<span class="st">"] "</span>, <span class="at">n =</span> <span class="dv">2</span>)</span>
+<span id="cb3-80"><a href="#cb3-80" aria-hidden="true" tabindex="-1"></a>    labels     <span class="ot">&lt;-</span> purrr<span class="sc">::</span><span class="fu">map_chr</span>(splits, <span class="sc">~</span><span class="cf">if</span> (<span class="fu">length</span>(.x) <span class="sc">&gt;=</span> <span class="dv">2</span>) .x[<span class="dv">2</span>] <span class="cf">else</span> .x[<span class="dv">1</span>])</span>
+<span id="cb3-81"><a href="#cb3-81" aria-hidden="true" tabindex="-1"></a>    value_part <span class="ot">&lt;-</span> purrr<span class="sc">::</span><span class="fu">map_chr</span>(splits, <span class="sc">~</span>.x[<span class="dv">1</span>]) <span class="sc">%&gt;%</span> stringr<span class="sc">::</span><span class="fu">str_remove</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">["</span>)</span>
+<span id="cb3-82"><a href="#cb3-82" aria-hidden="true" tabindex="-1"></a>    match      <span class="ot">&lt;-</span> purrr<span class="sc">::</span><span class="fu">map2_lgl</span>(labels, value_part, <span class="sc">~</span>.x <span class="sc">==</span> .y)</span>
+<span id="cb3-83"><a href="#cb3-83" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb3-84"><a href="#cb3-84" aria-hidden="true" tabindex="-1"></a>    recoding        <span class="ot">&lt;-</span> labels_full <span class="sc">%&gt;%</span> <span class="fu">as.character</span>()</span>
+<span id="cb3-85"><a href="#cb3-85" aria-hidden="true" tabindex="-1"></a>    new_names       <span class="ot">&lt;-</span> dplyr<span class="sc">::</span><span class="fu">case_when</span>(match <span class="sc">~</span> labels, <span class="sc">!</span>match <span class="sc">~</span> <span class="fu">as.character</span>(labels_full))</span>
+<span id="cb3-86"><a href="#cb3-86" aria-hidden="true" tabindex="-1"></a>    <span class="fu">names</span>(recoding) <span class="ot">&lt;-</span> new_names</span>
+<span id="cb3-87"><a href="#cb3-87" aria-hidden="true" tabindex="-1"></a>    recoding        <span class="ot">&lt;-</span> recoding[<span class="sc">!</span><span class="fu">duplicated</span>(<span class="fu">names</span>(recoding))]</span>
+<span id="cb3-88"><a href="#cb3-88" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb3-89"><a href="#cb3-89" aria-hidden="true" tabindex="-1"></a>    table <span class="ot">&lt;-</span> table <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">f =</span> forcats<span class="sc">::</span><span class="fu">fct_recode</span>(f, <span class="sc">!!!</span>recoding))</span>
+<span id="cb3-90"><a href="#cb3-90" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb3-91"><a href="#cb3-91" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb3-92"><a href="#cb3-92" aria-hidden="true" tabindex="-1"></a>  <span class="fu">names</span>(table)[<span class="dv">2</span>] <span class="ot">&lt;-</span> label</span>
+<span id="cb3-93"><a href="#cb3-93" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb3-94"><a href="#cb3-94" aria-hidden="true" tabindex="-1"></a>  <span class="co"># ── 5. Optional flextable formatting ─────────────────────────────────────────</span></span>
+<span id="cb3-95"><a href="#cb3-95" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">isTRUE</span>(as_flextable)) {</span>
+<span id="cb3-96"><a href="#cb3-96" aria-hidden="true" tabindex="-1"></a>    table <span class="ot">&lt;-</span> <span class="fu">.freq_format_table</span>(table)</span>
+<span id="cb3-97"><a href="#cb3-97" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb3-98"><a href="#cb3-98" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb3-99"><a href="#cb3-99" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(table)</span>
+<span id="cb3-100"><a href="#cb3-100" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb3-101"><a href="#cb3-101" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-102"><a href="#cb3-102" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-103"><a href="#cb3-103" aria-hidden="true" tabindex="-1"></a><span class="co">#' Internal helper: apply flextable formatting to a freq_spss tibble</span></span>
+<span id="cb3-104"><a href="#cb3-104" aria-hidden="true" tabindex="-1"></a><span class="co">#'</span></span>
+<span id="cb3-105"><a href="#cb3-105" aria-hidden="true" tabindex="-1"></a><span class="co">#' @param tbl A tibble returned by the core freq_spss logic (before column rename).</span></span>
+<span id="cb3-106"><a href="#cb3-106" aria-hidden="true" tabindex="-1"></a><span class="co">#' @return A formatted flextable object.</span></span>
+<span id="cb3-107"><a href="#cb3-107" aria-hidden="true" tabindex="-1"></a><span class="co">#' @keywords internal</span></span>
+<span id="cb3-108"><a href="#cb3-108" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-109"><a href="#cb3-109" aria-hidden="true" tabindex="-1"></a>.freq_format_table <span class="ot">&lt;-</span> <span class="cf">function</span>(tbl) {</span>
+<span id="cb3-110"><a href="#cb3-110" aria-hidden="true" tabindex="-1"></a>  tbl <span class="sc">%&gt;%</span></span>
+<span id="cb3-111"><a href="#cb3-111" aria-hidden="true" tabindex="-1"></a>    flextable<span class="sc">::</span><span class="fu">flextable</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb3-112"><a href="#cb3-112" aria-hidden="true" tabindex="-1"></a>    flextable<span class="sc">::</span><span class="fu">autofit</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb3-113"><a href="#cb3-113" aria-hidden="true" tabindex="-1"></a>    flextable<span class="sc">::</span><span class="fu">bg</span>(<span class="at">i =</span> <span class="sc">~</span>type <span class="sc">==</span> <span class="st">"user_na"</span>, <span class="at">j =</span> <span class="cn">NULL</span>, <span class="at">bg =</span> <span class="st">"lightgrey"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb3-114"><a href="#cb3-114" aria-hidden="true" tabindex="-1"></a>    flextable<span class="sc">::</span><span class="fu">bg</span>(<span class="at">i =</span> <span class="sc">~</span>type <span class="sc">!=</span> <span class="st">"user_na"</span>, <span class="at">j =</span> <span class="cn">NULL</span>, <span class="at">bg =</span> <span class="st">"lightblue"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb3-115"><a href="#cb3-115" aria-hidden="true" tabindex="-1"></a>    flextable<span class="sc">::</span><span class="fu">bg</span>(<span class="at">part =</span> <span class="st">"header"</span>,                  <span class="at">bg =</span> <span class="st">"lightgrey"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb3-116"><a href="#cb3-116" aria-hidden="true" tabindex="-1"></a>    flextable<span class="sc">::</span><span class="fu">delete_columns</span>(<span class="st">"type"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb3-117"><a href="#cb3-117" aria-hidden="true" tabindex="-1"></a>    flextable<span class="sc">::</span><span class="fu">set_header_labels</span>(</span>
+<span id="cb3-118"><a href="#cb3-118" aria-hidden="true" tabindex="-1"></a>      <span class="at">n           =</span> <span class="st">"Frequency"</span>,</span>
+<span id="cb3-119"><a href="#cb3-119" aria-hidden="true" tabindex="-1"></a>      <span class="at">p           =</span> <span class="st">"Percentage"</span>,</span>
+<span id="cb3-120"><a href="#cb3-120" aria-hidden="true" tabindex="-1"></a>      <span class="at">cum_p       =</span> <span class="st">"Cumulative %"</span>,</span>
+<span id="cb3-121"><a href="#cb3-121" aria-hidden="true" tabindex="-1"></a>      <span class="at">total_p     =</span> <span class="st">"Total %"</span>,</span>
+<span id="cb3-122"><a href="#cb3-122" aria-hidden="true" tabindex="-1"></a>      <span class="at">cum_p_total =</span> <span class="st">"Total Cumulative %"</span></span>
+<span id="cb3-123"><a href="#cb3-123" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span></span>
+<span id="cb3-124"><a href="#cb3-124" aria-hidden="true" tabindex="-1"></a>    flextable<span class="sc">::</span><span class="fu">align</span>(<span class="at">j =</span> <span class="sc">-</span><span class="dv">1</span>, <span class="at">align =</span> <span class="st">"right"</span>, <span class="at">part =</span> <span class="st">"all"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb3-125"><a href="#cb3-125" aria-hidden="true" tabindex="-1"></a>    flextable<span class="sc">::</span><span class="fu">vline</span>(<span class="at">j =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">4</span>), <span class="at">part =</span> <span class="st">"all"</span>)</span>
+<span id="cb3-126"><a href="#cb3-126" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p><br></p>
+</section>
+</section>
+</section>
+<section id="trials" class="level2" data-number="4.3">
+<h2 data-number="4.3" class="anchored" data-anchor-id="trials"><span class="header-section-number">4.3</span> Trials</h2>
+<section id="basic-application" class="level3" data-number="4.3.1">
+<h3 data-number="4.3.1" class="anchored" data-anchor-id="basic-application"><span class="header-section-number">4.3.1</span> Basic application</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">freq_spss</span>(<span class="at">data =</span> df, <span class="at">var =</span> skipmeal)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="huxtable" data-quarto-disable-processing="true" style="border-collapse: collapse; border: 0px; margin-bottom: 2em; margin-top: 2em; ; margin-left: auto; margin-right: auto;  ">
+<colgroup><col><col><col><col><col><col><col></colgroup><tbody><tr>
+<th style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0.4pt 0pt 0.4pt 0.4pt;    padding: 6pt 6pt 6pt 6pt; font-weight: bold;">type</th><th style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0.4pt 0pt 0.4pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: bold;">skipmeal - How often do you or other members of your household skip a meal because there is not enough money for food?: SC B, C</th><th style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0.4pt 0pt 0.4pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: bold;">n</th><th style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0.4pt 0pt 0.4pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: bold;">p</th><th style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0.4pt 0pt 0.4pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: bold;">cum_p</th><th style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0.4pt 0pt 0.4pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: bold;">total_p</th><th style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0.4pt 0.4pt 0.4pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: bold;">cum_p_total</th></tr>
+<tr>
+<td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0.4pt 0pt 0pt 0.4pt;    padding: 6pt 6pt 6pt 6pt; background-color: rgb(242, 242, 242); font-weight: normal;">valid</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0.4pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; background-color: rgb(242, 242, 242); font-weight: normal;">[1] Never</td><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0.4pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; background-color: rgb(242, 242, 242); font-weight: normal;">1407</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0.4pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; background-color: rgb(242, 242, 242); font-weight: normal;">84.91%</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0.4pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; background-color: rgb(242, 242, 242); font-weight: normal;">84.91%</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0.4pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; background-color: rgb(242, 242, 242); font-weight: normal;">43.64%</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0.4pt 0.4pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; background-color: rgb(242, 242, 242); font-weight: normal;">43.64%</td></tr>
+<tr>
+<td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0.4pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">valid</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">[2] Less than once a month</td><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">78</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">4.71%</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">89.62%</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">2.42%</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0.4pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">46.06%</td></tr>
+<tr>
+<td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0.4pt;    padding: 6pt 6pt 6pt 6pt; background-color: rgb(242, 242, 242); font-weight: normal;">valid</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; background-color: rgb(242, 242, 242); font-weight: normal;">[3] Once a month</td><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; background-color: rgb(242, 242, 242); font-weight: normal;">32</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; background-color: rgb(242, 242, 242); font-weight: normal;">1.93%</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; background-color: rgb(242, 242, 242); font-weight: normal;">91.55%</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; background-color: rgb(242, 242, 242); font-weight: normal;">0.99%</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0.4pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; background-color: rgb(242, 242, 242); font-weight: normal;">47.05%</td></tr>
+<tr>
+<td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0.4pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">valid</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">[4] Several times a month</td><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">53</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">3.2%</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">94.75%</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">1.64%</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0.4pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">48.7%</td></tr>
+<tr>
+<td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0.4pt;    padding: 6pt 6pt 6pt 6pt; background-color: rgb(242, 242, 242); font-weight: normal;">valid</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; background-color: rgb(242, 242, 242); font-weight: normal;">[5] Once a week</td><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; background-color: rgb(242, 242, 242); font-weight: normal;">39</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; background-color: rgb(242, 242, 242); font-weight: normal;">2.35%</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; background-color: rgb(242, 242, 242); font-weight: normal;">97.1%</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; background-color: rgb(242, 242, 242); font-weight: normal;">1.21%</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0.4pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; background-color: rgb(242, 242, 242); font-weight: normal;">49.91%</td></tr>
+<tr>
+<td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0.4pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">valid</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">[6] Several times a week</td><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">30</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">1.81%</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">98.91%</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">0.93%</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0.4pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">50.84%</td></tr>
+<tr>
+<td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0.4pt;    padding: 6pt 6pt 6pt 6pt; background-color: rgb(242, 242, 242); font-weight: normal;">valid</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; background-color: rgb(242, 242, 242); font-weight: normal;">[7] Every day</td><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; background-color: rgb(242, 242, 242); font-weight: normal;">18</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; background-color: rgb(242, 242, 242); font-weight: normal;">1.09%</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; background-color: rgb(242, 242, 242); font-weight: normal;">100%</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; background-color: rgb(242, 242, 242); font-weight: normal;">0.56%</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0.4pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; background-color: rgb(242, 242, 242); font-weight: normal;">51.4%</td></tr>
+<tr>
+<td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0.4pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">user_na</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">[-1] skip, didn`t return SC questionnaire</td><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">1483</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;"></td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;"></td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">46%</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0.4pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">97.39%</td></tr>
+<tr>
+<td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0.4pt;    padding: 6pt 6pt 6pt 6pt; background-color: rgb(242, 242, 242); font-weight: normal;">user_na</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; background-color: rgb(242, 242, 242); font-weight: normal;">[8] Can't choose</td><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; background-color: rgb(242, 242, 242); font-weight: normal;">54</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; background-color: rgb(242, 242, 242); font-weight: normal;"></td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; background-color: rgb(242, 242, 242); font-weight: normal;"></td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; background-color: rgb(242, 242, 242); font-weight: normal;">1.67%</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0.4pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; background-color: rgb(242, 242, 242); font-weight: normal;">99.07%</td></tr>
+<tr>
+<td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0.4pt 0.4pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">user_na</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0.4pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">[9] Not answered</td><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0.4pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">30</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0.4pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;"></td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0.4pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;"></td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0.4pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">0.93%</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0.4pt 0.4pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">100%</td></tr>
+</tbody></table>
+</div>
+</div>
+<p><br></p>
+</section>
+<section id="with-formatting" class="level3" data-number="4.3.2">
+<h3 data-number="4.3.2" class="anchored" data-anchor-id="with-formatting"><span class="header-section-number">4.3.2</span> With formatting</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">freq_spss</span>(<span class="at">data =</span> df, <span class="at">var =</span> skipmeal, <span class="at">as_flextable =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="tabwid"><style>.cl-d2ab2e6a{}.cl-d2a7fb1e{font-family:'Helvetica';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-d2a92dea{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-d2a92deb{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-d2a93c5e{width:9.287in;background-color:rgba(211, 211, 211, 1.00);vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 1pt solid rgba(102, 102, 102, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d2a93c68{width:0.668in;background-color:rgba(211, 211, 211, 1.00);vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 1pt solid rgba(102, 102, 102, 1.00);border-right: 1pt solid rgba(102, 102, 102, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d2a93c69{width:0.803in;background-color:rgba(211, 211, 211, 1.00);vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 1pt solid rgba(102, 102, 102, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d2a93c6a{width:0.803in;background-color:rgba(211, 211, 211, 1.00);vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 1pt solid rgba(102, 102, 102, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d2a93c6b{width:1.117in;background-color:rgba(211, 211, 211, 1.00);vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d2a93c72{width:9.287in;background-color:rgba(173, 216, 230, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 1pt solid rgba(102, 102, 102, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d2a93c73{width:0.668in;background-color:rgba(173, 216, 230, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 1pt solid rgba(102, 102, 102, 1.00);border-right: 1pt solid rgba(102, 102, 102, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d2a93c74{width:0.803in;background-color:rgba(173, 216, 230, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 1pt solid rgba(102, 102, 102, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d2a93c7c{width:0.803in;background-color:rgba(173, 216, 230, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 1pt solid rgba(102, 102, 102, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d2a93c7d{width:1.117in;background-color:rgba(173, 216, 230, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d2a93c7e{width:9.287in;background-color:rgba(173, 216, 230, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 1pt solid rgba(102, 102, 102, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d2a93c7f{width:0.668in;background-color:rgba(173, 216, 230, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 1pt solid rgba(102, 102, 102, 1.00);border-right: 1pt solid rgba(102, 102, 102, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d2a93c86{width:0.803in;background-color:rgba(173, 216, 230, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 1pt solid rgba(102, 102, 102, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d2a93c87{width:0.803in;background-color:rgba(173, 216, 230, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 1pt solid rgba(102, 102, 102, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d2a93c88{width:1.117in;background-color:rgba(173, 216, 230, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d2a93c89{width:9.287in;background-color:rgba(173, 216, 230, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 1pt solid rgba(102, 102, 102, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d2a93c8a{width:0.668in;background-color:rgba(173, 216, 230, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 1pt solid rgba(102, 102, 102, 1.00);border-right: 1pt solid rgba(102, 102, 102, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d2a93c90{width:0.803in;background-color:rgba(173, 216, 230, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 1pt solid rgba(102, 102, 102, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d2a93c91{width:0.803in;background-color:rgba(173, 216, 230, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 1pt solid rgba(102, 102, 102, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d2a93c92{width:1.117in;background-color:rgba(173, 216, 230, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d2a93c9a{width:9.287in;background-color:rgba(211, 211, 211, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 1pt solid rgba(102, 102, 102, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d2a93c9b{width:0.668in;background-color:rgba(211, 211, 211, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 1pt solid rgba(102, 102, 102, 1.00);border-right: 1pt solid rgba(102, 102, 102, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d2a93c9c{width:0.803in;background-color:rgba(211, 211, 211, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 1pt solid rgba(102, 102, 102, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d2a93c9d{width:0.803in;background-color:rgba(211, 211, 211, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 1pt solid rgba(102, 102, 102, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d2a93ca4{width:1.117in;background-color:rgba(211, 211, 211, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d2a93ca5{width:9.287in;background-color:rgba(211, 211, 211, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 1pt solid rgba(102, 102, 102, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d2a93ca6{width:0.668in;background-color:rgba(211, 211, 211, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 1pt solid rgba(102, 102, 102, 1.00);border-right: 1pt solid rgba(102, 102, 102, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d2a93cae{width:0.803in;background-color:rgba(211, 211, 211, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 1pt solid rgba(102, 102, 102, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d2a93caf{width:0.803in;background-color:rgba(211, 211, 211, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 1pt solid rgba(102, 102, 102, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d2a93cb0{width:1.117in;background-color:rgba(211, 211, 211, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d2a93cb1{width:9.287in;background-color:rgba(211, 211, 211, 1.00);vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 1pt solid rgba(102, 102, 102, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d2a93cb8{width:0.668in;background-color:rgba(211, 211, 211, 1.00);vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 1pt solid rgba(102, 102, 102, 1.00);border-right: 1pt solid rgba(102, 102, 102, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d2a93cb9{width:0.803in;background-color:rgba(211, 211, 211, 1.00);vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 1pt solid rgba(102, 102, 102, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d2a93cba{width:0.803in;background-color:rgba(211, 211, 211, 1.00);vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 1pt solid rgba(102, 102, 102, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d2a93cbb{width:1.117in;background-color:rgba(211, 211, 211, 1.00);vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing="true" class="cl-d2ab2e6a"><thead><tr style="overflow-wrap:break-word;"><th class="cl-d2a93c5e"><p class="cl-d2a92dea"><span class="cl-d2a7fb1e">skipmeal - How often do you or other members of your household skip a meal because there is not enough money for food?: SC B, C</span></p></th><th class="cl-d2a93c68"><p class="cl-d2a92deb"><span class="cl-d2a7fb1e">Frequency</span></p></th><th class="cl-d2a93c69"><p class="cl-d2a92deb"><span class="cl-d2a7fb1e">Percentage</span></p></th><th class="cl-d2a93c6a"><p class="cl-d2a92deb"><span class="cl-d2a7fb1e">Cumulative %</span></p></th><th class="cl-d2a93c69"><p class="cl-d2a92deb"><span class="cl-d2a7fb1e">Total %</span></p></th><th class="cl-d2a93c6b"><p class="cl-d2a92deb"><span class="cl-d2a7fb1e">Total Cumulative %</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-d2a93c72"><p class="cl-d2a92dea"><span class="cl-d2a7fb1e">[1] Never</span></p></td><td class="cl-d2a93c73"><p class="cl-d2a92deb"><span class="cl-d2a7fb1e">1,407</span></p></td><td class="cl-d2a93c74"><p class="cl-d2a92deb"><span class="cl-d2a7fb1e">84.91%</span></p></td><td class="cl-d2a93c7c"><p class="cl-d2a92deb"><span class="cl-d2a7fb1e">84.91%</span></p></td><td class="cl-d2a93c74"><p class="cl-d2a92deb"><span class="cl-d2a7fb1e">43.64%</span></p></td><td class="cl-d2a93c7d"><p class="cl-d2a92deb"><span class="cl-d2a7fb1e">43.64%</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d2a93c72"><p class="cl-d2a92dea"><span class="cl-d2a7fb1e">[2] Less than once a month</span></p></td><td class="cl-d2a93c73"><p class="cl-d2a92deb"><span class="cl-d2a7fb1e">78</span></p></td><td class="cl-d2a93c74"><p class="cl-d2a92deb"><span class="cl-d2a7fb1e">4.71%</span></p></td><td class="cl-d2a93c7c"><p class="cl-d2a92deb"><span class="cl-d2a7fb1e">89.62%</span></p></td><td class="cl-d2a93c74"><p class="cl-d2a92deb"><span class="cl-d2a7fb1e">2.42%</span></p></td><td class="cl-d2a93c7d"><p class="cl-d2a92deb"><span class="cl-d2a7fb1e">46.06%</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d2a93c7e"><p class="cl-d2a92dea"><span class="cl-d2a7fb1e">[3] Once a month</span></p></td><td class="cl-d2a93c7f"><p class="cl-d2a92deb"><span class="cl-d2a7fb1e">32</span></p></td><td class="cl-d2a93c86"><p class="cl-d2a92deb"><span class="cl-d2a7fb1e">1.93%</span></p></td><td class="cl-d2a93c87"><p class="cl-d2a92deb"><span class="cl-d2a7fb1e">91.55%</span></p></td><td class="cl-d2a93c86"><p class="cl-d2a92deb"><span class="cl-d2a7fb1e">0.99%</span></p></td><td class="cl-d2a93c88"><p class="cl-d2a92deb"><span class="cl-d2a7fb1e">47.05%</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d2a93c7e"><p class="cl-d2a92dea"><span class="cl-d2a7fb1e">[4] Several times a month</span></p></td><td class="cl-d2a93c7f"><p class="cl-d2a92deb"><span class="cl-d2a7fb1e">53</span></p></td><td class="cl-d2a93c86"><p class="cl-d2a92deb"><span class="cl-d2a7fb1e">3.2%</span></p></td><td class="cl-d2a93c87"><p class="cl-d2a92deb"><span class="cl-d2a7fb1e">94.75%</span></p></td><td class="cl-d2a93c86"><p class="cl-d2a92deb"><span class="cl-d2a7fb1e">1.64%</span></p></td><td class="cl-d2a93c88"><p class="cl-d2a92deb"><span class="cl-d2a7fb1e">48.7%</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d2a93c7e"><p class="cl-d2a92dea"><span class="cl-d2a7fb1e">[5] Once a week</span></p></td><td class="cl-d2a93c7f"><p class="cl-d2a92deb"><span class="cl-d2a7fb1e">39</span></p></td><td class="cl-d2a93c86"><p class="cl-d2a92deb"><span class="cl-d2a7fb1e">2.35%</span></p></td><td class="cl-d2a93c87"><p class="cl-d2a92deb"><span class="cl-d2a7fb1e">97.1%</span></p></td><td class="cl-d2a93c86"><p class="cl-d2a92deb"><span class="cl-d2a7fb1e">1.21%</span></p></td><td class="cl-d2a93c88"><p class="cl-d2a92deb"><span class="cl-d2a7fb1e">49.91%</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d2a93c7e"><p class="cl-d2a92dea"><span class="cl-d2a7fb1e">[6] Several times a week</span></p></td><td class="cl-d2a93c7f"><p class="cl-d2a92deb"><span class="cl-d2a7fb1e">30</span></p></td><td class="cl-d2a93c86"><p class="cl-d2a92deb"><span class="cl-d2a7fb1e">1.81%</span></p></td><td class="cl-d2a93c87"><p class="cl-d2a92deb"><span class="cl-d2a7fb1e">98.91%</span></p></td><td class="cl-d2a93c86"><p class="cl-d2a92deb"><span class="cl-d2a7fb1e">0.93%</span></p></td><td class="cl-d2a93c88"><p class="cl-d2a92deb"><span class="cl-d2a7fb1e">50.84%</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d2a93c89"><p class="cl-d2a92dea"><span class="cl-d2a7fb1e">[7] Every day</span></p></td><td class="cl-d2a93c8a"><p class="cl-d2a92deb"><span class="cl-d2a7fb1e">18</span></p></td><td class="cl-d2a93c90"><p class="cl-d2a92deb"><span class="cl-d2a7fb1e">1.09%</span></p></td><td class="cl-d2a93c91"><p class="cl-d2a92deb"><span class="cl-d2a7fb1e">100%</span></p></td><td class="cl-d2a93c90"><p class="cl-d2a92deb"><span class="cl-d2a7fb1e">0.56%</span></p></td><td class="cl-d2a93c92"><p class="cl-d2a92deb"><span class="cl-d2a7fb1e">51.4%</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d2a93c9a"><p class="cl-d2a92dea"><span class="cl-d2a7fb1e">[-1] skip, didn`t return SC questionnaire</span></p></td><td class="cl-d2a93c9b"><p class="cl-d2a92deb"><span class="cl-d2a7fb1e">1,483</span></p></td><td class="cl-d2a93c9c"><p class="cl-d2a92deb"><span class="cl-d2a7fb1e"></span></p></td><td class="cl-d2a93c9d"><p class="cl-d2a92deb"><span class="cl-d2a7fb1e"></span></p></td><td class="cl-d2a93c9c"><p class="cl-d2a92deb"><span class="cl-d2a7fb1e">46%</span></p></td><td class="cl-d2a93ca4"><p class="cl-d2a92deb"><span class="cl-d2a7fb1e">97.39%</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d2a93ca5"><p class="cl-d2a92dea"><span class="cl-d2a7fb1e">[8] Can't choose</span></p></td><td class="cl-d2a93ca6"><p class="cl-d2a92deb"><span class="cl-d2a7fb1e">54</span></p></td><td class="cl-d2a93cae"><p class="cl-d2a92deb"><span class="cl-d2a7fb1e"></span></p></td><td class="cl-d2a93caf"><p class="cl-d2a92deb"><span class="cl-d2a7fb1e"></span></p></td><td class="cl-d2a93cae"><p class="cl-d2a92deb"><span class="cl-d2a7fb1e">1.67%</span></p></td><td class="cl-d2a93cb0"><p class="cl-d2a92deb"><span class="cl-d2a7fb1e">99.07%</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d2a93cb1"><p class="cl-d2a92dea"><span class="cl-d2a7fb1e">[9] Not answered</span></p></td><td class="cl-d2a93cb8"><p class="cl-d2a92deb"><span class="cl-d2a7fb1e">30</span></p></td><td class="cl-d2a93cb9"><p class="cl-d2a92deb"><span class="cl-d2a7fb1e"></span></p></td><td class="cl-d2a93cba"><p class="cl-d2a92deb"><span class="cl-d2a7fb1e"></span></p></td><td class="cl-d2a93cb9"><p class="cl-d2a92deb"><span class="cl-d2a7fb1e">0.93%</span></p></td><td class="cl-d2a93cbb"><p class="cl-d2a92deb"><span class="cl-d2a7fb1e">100%</span></p></td></tr></tbody></table></div>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">freq_spss</span>(<span class="at">data =</span> df, <span class="at">var =</span> Poverty1, <span class="at">as_flextable =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="tabwid"><style>.cl-d2bc1964{}.cl-d2b8f64e{font-family:'Helvetica';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-d2ba7226{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-d2ba7230{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-d2ba7ee2{width:10.604in;background-color:rgba(211, 211, 211, 1.00);vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 1pt solid rgba(102, 102, 102, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d2ba7ee3{width:0.668in;background-color:rgba(211, 211, 211, 1.00);vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 1pt solid rgba(102, 102, 102, 1.00);border-right: 1pt solid rgba(102, 102, 102, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d2ba7ee4{width:0.803in;background-color:rgba(211, 211, 211, 1.00);vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 1pt solid rgba(102, 102, 102, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d2ba7ee5{width:0.803in;background-color:rgba(211, 211, 211, 1.00);vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 1pt solid rgba(102, 102, 102, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d2ba7ee6{width:1.117in;background-color:rgba(211, 211, 211, 1.00);vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d2ba7ee7{width:10.604in;background-color:rgba(173, 216, 230, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 1pt solid rgba(102, 102, 102, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d2ba7eec{width:0.668in;background-color:rgba(173, 216, 230, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 1pt solid rgba(102, 102, 102, 1.00);border-right: 1pt solid rgba(102, 102, 102, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d2ba7eed{width:0.803in;background-color:rgba(173, 216, 230, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 1pt solid rgba(102, 102, 102, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d2ba7eee{width:0.803in;background-color:rgba(173, 216, 230, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 1pt solid rgba(102, 102, 102, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d2ba7ef6{width:1.117in;background-color:rgba(173, 216, 230, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d2ba7ef7{width:10.604in;background-color:rgba(173, 216, 230, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 1pt solid rgba(102, 102, 102, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d2ba7ef8{width:0.668in;background-color:rgba(173, 216, 230, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 1pt solid rgba(102, 102, 102, 1.00);border-right: 1pt solid rgba(102, 102, 102, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d2ba7ef9{width:0.803in;background-color:rgba(173, 216, 230, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 1pt solid rgba(102, 102, 102, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d2ba7efa{width:0.803in;background-color:rgba(173, 216, 230, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 1pt solid rgba(102, 102, 102, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d2ba7efb{width:1.117in;background-color:rgba(173, 216, 230, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d2ba7f00{width:10.604in;background-color:rgba(211, 211, 211, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 1pt solid rgba(102, 102, 102, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d2ba7f01{width:0.668in;background-color:rgba(211, 211, 211, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 1pt solid rgba(102, 102, 102, 1.00);border-right: 1pt solid rgba(102, 102, 102, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d2ba7f02{width:0.803in;background-color:rgba(211, 211, 211, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 1pt solid rgba(102, 102, 102, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d2ba7f03{width:0.803in;background-color:rgba(211, 211, 211, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 1pt solid rgba(102, 102, 102, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d2ba7f04{width:1.117in;background-color:rgba(211, 211, 211, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d2ba7f05{width:10.604in;background-color:rgba(211, 211, 211, 1.00);vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 1pt solid rgba(102, 102, 102, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d2ba7f06{width:0.668in;background-color:rgba(211, 211, 211, 1.00);vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 1pt solid rgba(102, 102, 102, 1.00);border-right: 1pt solid rgba(102, 102, 102, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d2ba7f0a{width:0.803in;background-color:rgba(211, 211, 211, 1.00);vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 1pt solid rgba(102, 102, 102, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d2ba7f0b{width:0.803in;background-color:rgba(211, 211, 211, 1.00);vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 1pt solid rgba(102, 102, 102, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d2ba7f0c{width:1.117in;background-color:rgba(211, 211, 211, 1.00);vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing="true" class="cl-d2bc1964"><thead><tr style="overflow-wrap:break-word;"><th class="cl-d2ba7ee2"><p class="cl-d2ba7226"><span class="cl-d2b8f64e">Poverty1 - Is someone in Britain in poverty if they had enough to buy the things they really needed, but not enough to buy the things most people take for</span></p></th><th class="cl-d2ba7ee3"><p class="cl-d2ba7230"><span class="cl-d2b8f64e">Frequency</span></p></th><th class="cl-d2ba7ee4"><p class="cl-d2ba7230"><span class="cl-d2b8f64e">Percentage</span></p></th><th class="cl-d2ba7ee5"><p class="cl-d2ba7230"><span class="cl-d2b8f64e">Cumulative %</span></p></th><th class="cl-d2ba7ee4"><p class="cl-d2ba7230"><span class="cl-d2b8f64e">Total %</span></p></th><th class="cl-d2ba7ee6"><p class="cl-d2ba7230"><span class="cl-d2b8f64e">Total Cumulative %</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-d2ba7ee7"><p class="cl-d2ba7226"><span class="cl-d2b8f64e">[1] Was in poverty</span></p></td><td class="cl-d2ba7eec"><p class="cl-d2ba7230"><span class="cl-d2b8f64e">920</span></p></td><td class="cl-d2ba7eed"><p class="cl-d2ba7230"><span class="cl-d2b8f64e">29.26%</span></p></td><td class="cl-d2ba7eee"><p class="cl-d2ba7230"><span class="cl-d2b8f64e">29.26%</span></p></td><td class="cl-d2ba7eed"><p class="cl-d2ba7230"><span class="cl-d2b8f64e">28.54%</span></p></td><td class="cl-d2ba7ef6"><p class="cl-d2ba7230"><span class="cl-d2b8f64e">28.54%</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d2ba7ef7"><p class="cl-d2ba7226"><span class="cl-d2b8f64e">[2] Was not</span></p></td><td class="cl-d2ba7ef8"><p class="cl-d2ba7230"><span class="cl-d2b8f64e">2,224</span></p></td><td class="cl-d2ba7ef9"><p class="cl-d2ba7230"><span class="cl-d2b8f64e">70.74%</span></p></td><td class="cl-d2ba7efa"><p class="cl-d2ba7230"><span class="cl-d2b8f64e">100%</span></p></td><td class="cl-d2ba7ef9"><p class="cl-d2ba7230"><span class="cl-d2b8f64e">68.98%</span></p></td><td class="cl-d2ba7efb"><p class="cl-d2ba7230"><span class="cl-d2b8f64e">97.52%</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d2ba7f00"><p class="cl-d2ba7226"><span class="cl-d2b8f64e">[8] Don`t know</span></p></td><td class="cl-d2ba7f01"><p class="cl-d2ba7230"><span class="cl-d2b8f64e">75</span></p></td><td class="cl-d2ba7f02"><p class="cl-d2ba7230"><span class="cl-d2b8f64e"></span></p></td><td class="cl-d2ba7f03"><p class="cl-d2ba7230"><span class="cl-d2b8f64e"></span></p></td><td class="cl-d2ba7f02"><p class="cl-d2ba7230"><span class="cl-d2b8f64e">2.33%</span></p></td><td class="cl-d2ba7f04"><p class="cl-d2ba7230"><span class="cl-d2b8f64e">99.84%</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d2ba7f05"><p class="cl-d2ba7226"><span class="cl-d2b8f64e">[9] Refusal</span></p></td><td class="cl-d2ba7f06"><p class="cl-d2ba7230"><span class="cl-d2b8f64e">5</span></p></td><td class="cl-d2ba7f0a"><p class="cl-d2ba7230"><span class="cl-d2b8f64e"></span></p></td><td class="cl-d2ba7f0b"><p class="cl-d2ba7230"><span class="cl-d2b8f64e"></span></p></td><td class="cl-d2ba7f0a"><p class="cl-d2ba7230"><span class="cl-d2b8f64e">0.16%</span></p></td><td class="cl-d2ba7f0c"><p class="cl-d2ba7230"><span class="cl-d2b8f64e">100%</span></p></td></tr></tbody></table></div>
+</div>
+</div>
+<p><br></p>
+</section>
+<section id="illustration-of-what-happens-when-some-values-have-no-labels" class="level3" data-number="4.3.3">
+<h3 data-number="4.3.3" class="anchored" data-anchor-id="illustration-of-what-happens-when-some-values-have-no-labels"><span class="header-section-number">4.3.3</span> Illustration of what happens when some values have no labels…</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">freq_spss</span>(<span class="at">data =</span> df, <span class="at">var =</span> libauth, <span class="at">as_flextable =</span> T)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="tabwid"><style>.cl-d2d29a4a{}.cl-d2cf2216{font-family:'Helvetica';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-d2d06162{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-d2d0616c{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-d2d07076{width:4.523in;background-color:rgba(211, 211, 211, 1.00);vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 1pt solid rgba(102, 102, 102, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d2d07077{width:0.54in;background-color:rgba(211, 211, 211, 1.00);vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 1pt solid rgba(102, 102, 102, 1.00);border-right: 1pt solid rgba(102, 102, 102, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d2d07080{width:0.718in;background-color:rgba(211, 211, 211, 1.00);vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 1pt solid rgba(102, 102, 102, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d2d07081{width:0.803in;background-color:rgba(211, 211, 211, 1.00);vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 1pt solid rgba(102, 102, 102, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d2d07082{width:0.803in;background-color:rgba(211, 211, 211, 1.00);vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 1pt solid rgba(102, 102, 102, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d2d07083{width:1.117in;background-color:rgba(211, 211, 211, 1.00);vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d2d0708a{width:4.523in;background-color:rgba(173, 216, 230, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 1pt solid rgba(102, 102, 102, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d2d0708b{width:0.54in;background-color:rgba(173, 216, 230, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 1pt solid rgba(102, 102, 102, 1.00);border-right: 1pt solid rgba(102, 102, 102, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d2d0708c{width:0.718in;background-color:rgba(173, 216, 230, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 1pt solid rgba(102, 102, 102, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d2d0708d{width:0.803in;background-color:rgba(173, 216, 230, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 1pt solid rgba(102, 102, 102, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d2d07094{width:0.803in;background-color:rgba(173, 216, 230, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 1pt solid rgba(102, 102, 102, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d2d07095{width:1.117in;background-color:rgba(173, 216, 230, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d2d07096{width:4.523in;background-color:rgba(173, 216, 230, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 1pt solid rgba(102, 102, 102, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d2d07097{width:0.54in;background-color:rgba(173, 216, 230, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 1pt solid rgba(102, 102, 102, 1.00);border-right: 1pt solid rgba(102, 102, 102, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d2d07098{width:0.718in;background-color:rgba(173, 216, 230, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 1pt solid rgba(102, 102, 102, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d2d0709e{width:0.803in;background-color:rgba(173, 216, 230, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 1pt solid rgba(102, 102, 102, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d2d0709f{width:0.803in;background-color:rgba(173, 216, 230, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 1pt solid rgba(102, 102, 102, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d2d070a0{width:1.117in;background-color:rgba(173, 216, 230, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d2d070a1{width:4.523in;background-color:rgba(211, 211, 211, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 1pt solid rgba(102, 102, 102, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d2d070a2{width:0.54in;background-color:rgba(211, 211, 211, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 1pt solid rgba(102, 102, 102, 1.00);border-right: 1pt solid rgba(102, 102, 102, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d2d070a8{width:0.718in;background-color:rgba(211, 211, 211, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 1pt solid rgba(102, 102, 102, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d2d070a9{width:0.803in;background-color:rgba(211, 211, 211, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 1pt solid rgba(102, 102, 102, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d2d070aa{width:0.803in;background-color:rgba(211, 211, 211, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 1pt solid rgba(102, 102, 102, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d2d070b2{width:1.117in;background-color:rgba(211, 211, 211, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d2d070b3{width:4.523in;background-color:rgba(211, 211, 211, 1.00);vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 1pt solid rgba(102, 102, 102, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d2d070b4{width:0.54in;background-color:rgba(211, 211, 211, 1.00);vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 1pt solid rgba(102, 102, 102, 1.00);border-right: 1pt solid rgba(102, 102, 102, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d2d070b5{width:0.718in;background-color:rgba(211, 211, 211, 1.00);vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 1pt solid rgba(102, 102, 102, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d2d070b6{width:0.803in;background-color:rgba(211, 211, 211, 1.00);vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 1pt solid rgba(102, 102, 102, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d2d070bc{width:0.803in;background-color:rgba(211, 211, 211, 1.00);vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 1pt solid rgba(102, 102, 102, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d2d070bd{width:1.117in;background-color:rgba(211, 211, 211, 1.00);vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing="true" class="cl-d2d29a4a"><thead><tr style="overflow-wrap:break-word;"><th class="cl-d2d07076"><p class="cl-d2d06162"><span class="cl-d2cf2216">libauth - Libertarian-authoritarian scale (TradVals to censor) dv</span></p></th><th class="cl-d2d07077"><p class="cl-d2d0616c"><span class="cl-d2cf2216">Frequency</span></p></th><th class="cl-d2d07080"><p class="cl-d2d0616c"><span class="cl-d2cf2216">Percentage</span></p></th><th class="cl-d2d07081"><p class="cl-d2d0616c"><span class="cl-d2cf2216">Cumulative %</span></p></th><th class="cl-d2d07082"><p class="cl-d2d0616c"><span class="cl-d2cf2216">Total %</span></p></th><th class="cl-d2d07083"><p class="cl-d2d0616c"><span class="cl-d2cf2216">Total Cumulative %</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-d2d0708a"><p class="cl-d2d06162"><span class="cl-d2cf2216">[1] libertarian</span></p></td><td class="cl-d2d0708b"><p class="cl-d2d0616c"><span class="cl-d2cf2216">3</span></p></td><td class="cl-d2d0708c"><p class="cl-d2d0616c"><span class="cl-d2cf2216">0.12%</span></p></td><td class="cl-d2d0708d"><p class="cl-d2d0616c"><span class="cl-d2cf2216">0.12%</span></p></td><td class="cl-d2d07094"><p class="cl-d2d0616c"><span class="cl-d2cf2216">0.09%</span></p></td><td class="cl-d2d07095"><p class="cl-d2d0616c"><span class="cl-d2cf2216">0.09%</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d2d07096"><p class="cl-d2d06162"><span class="cl-d2cf2216">1.16666666666667</span></p></td><td class="cl-d2d07097"><p class="cl-d2d0616c"><span class="cl-d2cf2216">3</span></p></td><td class="cl-d2d07098"><p class="cl-d2d0616c"><span class="cl-d2cf2216">0.12%</span></p></td><td class="cl-d2d0709e"><p class="cl-d2d0616c"><span class="cl-d2cf2216">0.23%</span></p></td><td class="cl-d2d0709f"><p class="cl-d2d0616c"><span class="cl-d2cf2216">0.09%</span></p></td><td class="cl-d2d070a0"><p class="cl-d2d0616c"><span class="cl-d2cf2216">0.19%</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d2d07096"><p class="cl-d2d06162"><span class="cl-d2cf2216">1.33333333333333</span></p></td><td class="cl-d2d07097"><p class="cl-d2d0616c"><span class="cl-d2cf2216">2</span></p></td><td class="cl-d2d07098"><p class="cl-d2d0616c"><span class="cl-d2cf2216">0.08%</span></p></td><td class="cl-d2d0709e"><p class="cl-d2d0616c"><span class="cl-d2cf2216">0.31%</span></p></td><td class="cl-d2d0709f"><p class="cl-d2d0616c"><span class="cl-d2cf2216">0.06%</span></p></td><td class="cl-d2d070a0"><p class="cl-d2d0616c"><span class="cl-d2cf2216">0.25%</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d2d07096"><p class="cl-d2d06162"><span class="cl-d2cf2216">1.5</span></p></td><td class="cl-d2d07097"><p class="cl-d2d0616c"><span class="cl-d2cf2216">11</span></p></td><td class="cl-d2d07098"><p class="cl-d2d0616c"><span class="cl-d2cf2216">0.43%</span></p></td><td class="cl-d2d0709e"><p class="cl-d2d0616c"><span class="cl-d2cf2216">0.73%</span></p></td><td class="cl-d2d0709f"><p class="cl-d2d0616c"><span class="cl-d2cf2216">0.34%</span></p></td><td class="cl-d2d070a0"><p class="cl-d2d0616c"><span class="cl-d2cf2216">0.59%</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d2d07096"><p class="cl-d2d06162"><span class="cl-d2cf2216">1.66666666666667</span></p></td><td class="cl-d2d07097"><p class="cl-d2d0616c"><span class="cl-d2cf2216">19</span></p></td><td class="cl-d2d07098"><p class="cl-d2d0616c"><span class="cl-d2cf2216">0.73%</span></p></td><td class="cl-d2d0709e"><p class="cl-d2d0616c"><span class="cl-d2cf2216">1.47%</span></p></td><td class="cl-d2d0709f"><p class="cl-d2d0616c"><span class="cl-d2cf2216">0.59%</span></p></td><td class="cl-d2d070a0"><p class="cl-d2d0616c"><span class="cl-d2cf2216">1.18%</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d2d07096"><p class="cl-d2d06162"><span class="cl-d2cf2216">1.83333333333333</span></p></td><td class="cl-d2d07097"><p class="cl-d2d0616c"><span class="cl-d2cf2216">28</span></p></td><td class="cl-d2d07098"><p class="cl-d2d0616c"><span class="cl-d2cf2216">1.08%</span></p></td><td class="cl-d2d0709e"><p class="cl-d2d0616c"><span class="cl-d2cf2216">2.55%</span></p></td><td class="cl-d2d0709f"><p class="cl-d2d0616c"><span class="cl-d2cf2216">0.87%</span></p></td><td class="cl-d2d070a0"><p class="cl-d2d0616c"><span class="cl-d2cf2216">2.05%</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d2d07096"><p class="cl-d2d06162"><span class="cl-d2cf2216">2</span></p></td><td class="cl-d2d07097"><p class="cl-d2d0616c"><span class="cl-d2cf2216">33</span></p></td><td class="cl-d2d07098"><p class="cl-d2d0616c"><span class="cl-d2cf2216">1.28%</span></p></td><td class="cl-d2d0709e"><p class="cl-d2d0616c"><span class="cl-d2cf2216">3.83%</span></p></td><td class="cl-d2d0709f"><p class="cl-d2d0616c"><span class="cl-d2cf2216">1.02%</span></p></td><td class="cl-d2d070a0"><p class="cl-d2d0616c"><span class="cl-d2cf2216">3.07%</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d2d07096"><p class="cl-d2d06162"><span class="cl-d2cf2216">2.16666666666667</span></p></td><td class="cl-d2d07097"><p class="cl-d2d0616c"><span class="cl-d2cf2216">41</span></p></td><td class="cl-d2d07098"><p class="cl-d2d0616c"><span class="cl-d2cf2216">1.58%</span></p></td><td class="cl-d2d0709e"><p class="cl-d2d0616c"><span class="cl-d2cf2216">5.41%</span></p></td><td class="cl-d2d0709f"><p class="cl-d2d0616c"><span class="cl-d2cf2216">1.27%</span></p></td><td class="cl-d2d070a0"><p class="cl-d2d0616c"><span class="cl-d2cf2216">4.34%</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d2d07096"><p class="cl-d2d06162"><span class="cl-d2cf2216">2.33333333333333</span></p></td><td class="cl-d2d07097"><p class="cl-d2d0616c"><span class="cl-d2cf2216">62</span></p></td><td class="cl-d2d07098"><p class="cl-d2d0616c"><span class="cl-d2cf2216">2.4%</span></p></td><td class="cl-d2d0709e"><p class="cl-d2d0616c"><span class="cl-d2cf2216">7.81%</span></p></td><td class="cl-d2d0709f"><p class="cl-d2d0616c"><span class="cl-d2cf2216">1.92%</span></p></td><td class="cl-d2d070a0"><p class="cl-d2d0616c"><span class="cl-d2cf2216">6.27%</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d2d07096"><p class="cl-d2d06162"><span class="cl-d2cf2216">2.4</span></p></td><td class="cl-d2d07097"><p class="cl-d2d0616c"><span class="cl-d2cf2216">3</span></p></td><td class="cl-d2d07098"><p class="cl-d2d0616c"><span class="cl-d2cf2216">0.12%</span></p></td><td class="cl-d2d0709e"><p class="cl-d2d0616c"><span class="cl-d2cf2216">7.92%</span></p></td><td class="cl-d2d0709f"><p class="cl-d2d0616c"><span class="cl-d2cf2216">0.09%</span></p></td><td class="cl-d2d070a0"><p class="cl-d2d0616c"><span class="cl-d2cf2216">6.36%</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d2d07096"><p class="cl-d2d06162"><span class="cl-d2cf2216">2.5</span></p></td><td class="cl-d2d07097"><p class="cl-d2d0616c"><span class="cl-d2cf2216">77</span></p></td><td class="cl-d2d07098"><p class="cl-d2d0616c"><span class="cl-d2cf2216">2.98%</span></p></td><td class="cl-d2d0709e"><p class="cl-d2d0616c"><span class="cl-d2cf2216">10.9%</span></p></td><td class="cl-d2d0709f"><p class="cl-d2d0616c"><span class="cl-d2cf2216">2.39%</span></p></td><td class="cl-d2d070a0"><p class="cl-d2d0616c"><span class="cl-d2cf2216">8.75%</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d2d07096"><p class="cl-d2d06162"><span class="cl-d2cf2216">2.66666666666667</span></p></td><td class="cl-d2d07097"><p class="cl-d2d0616c"><span class="cl-d2cf2216">93</span></p></td><td class="cl-d2d07098"><p class="cl-d2d0616c"><span class="cl-d2cf2216">3.59%</span></p></td><td class="cl-d2d0709e"><p class="cl-d2d0616c"><span class="cl-d2cf2216">14.5%</span></p></td><td class="cl-d2d0709f"><p class="cl-d2d0616c"><span class="cl-d2cf2216">2.88%</span></p></td><td class="cl-d2d070a0"><p class="cl-d2d0616c"><span class="cl-d2cf2216">11.63%</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d2d07096"><p class="cl-d2d06162"><span class="cl-d2cf2216">2.83333333333333</span></p></td><td class="cl-d2d07097"><p class="cl-d2d0616c"><span class="cl-d2cf2216">117</span></p></td><td class="cl-d2d07098"><p class="cl-d2d0616c"><span class="cl-d2cf2216">4.52%</span></p></td><td class="cl-d2d0709e"><p class="cl-d2d0616c"><span class="cl-d2cf2216">19.02%</span></p></td><td class="cl-d2d0709f"><p class="cl-d2d0616c"><span class="cl-d2cf2216">3.63%</span></p></td><td class="cl-d2d070a0"><p class="cl-d2d0616c"><span class="cl-d2cf2216">15.26%</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d2d07096"><p class="cl-d2d06162"><span class="cl-d2cf2216">3</span></p></td><td class="cl-d2d07097"><p class="cl-d2d0616c"><span class="cl-d2cf2216">172</span></p></td><td class="cl-d2d07098"><p class="cl-d2d0616c"><span class="cl-d2cf2216">6.65%</span></p></td><td class="cl-d2d0709e"><p class="cl-d2d0616c"><span class="cl-d2cf2216">25.67%</span></p></td><td class="cl-d2d0709f"><p class="cl-d2d0616c"><span class="cl-d2cf2216">5.33%</span></p></td><td class="cl-d2d070a0"><p class="cl-d2d0616c"><span class="cl-d2cf2216">20.6%</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d2d07096"><p class="cl-d2d06162"><span class="cl-d2cf2216">3.16666666666667</span></p></td><td class="cl-d2d07097"><p class="cl-d2d0616c"><span class="cl-d2cf2216">161</span></p></td><td class="cl-d2d07098"><p class="cl-d2d0616c"><span class="cl-d2cf2216">6.22%</span></p></td><td class="cl-d2d0709e"><p class="cl-d2d0616c"><span class="cl-d2cf2216">31.89%</span></p></td><td class="cl-d2d0709f"><p class="cl-d2d0616c"><span class="cl-d2cf2216">4.99%</span></p></td><td class="cl-d2d070a0"><p class="cl-d2d0616c"><span class="cl-d2cf2216">25.59%</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d2d07096"><p class="cl-d2d06162"><span class="cl-d2cf2216">3.33333333333333</span></p></td><td class="cl-d2d07097"><p class="cl-d2d0616c"><span class="cl-d2cf2216">207</span></p></td><td class="cl-d2d07098"><p class="cl-d2d0616c"><span class="cl-d2cf2216">8%</span></p></td><td class="cl-d2d0709e"><p class="cl-d2d0616c"><span class="cl-d2cf2216">39.89%</span></p></td><td class="cl-d2d0709f"><p class="cl-d2d0616c"><span class="cl-d2cf2216">6.42%</span></p></td><td class="cl-d2d070a0"><p class="cl-d2d0616c"><span class="cl-d2cf2216">32.01%</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d2d07096"><p class="cl-d2d06162"><span class="cl-d2cf2216">3.4</span></p></td><td class="cl-d2d07097"><p class="cl-d2d0616c"><span class="cl-d2cf2216">1</span></p></td><td class="cl-d2d07098"><p class="cl-d2d0616c"><span class="cl-d2cf2216">0.04%</span></p></td><td class="cl-d2d0709e"><p class="cl-d2d0616c"><span class="cl-d2cf2216">39.93%</span></p></td><td class="cl-d2d0709f"><p class="cl-d2d0616c"><span class="cl-d2cf2216">0.03%</span></p></td><td class="cl-d2d070a0"><p class="cl-d2d0616c"><span class="cl-d2cf2216">32.04%</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d2d07096"><p class="cl-d2d06162"><span class="cl-d2cf2216">3.5</span></p></td><td class="cl-d2d07097"><p class="cl-d2d0616c"><span class="cl-d2cf2216">225</span></p></td><td class="cl-d2d07098"><p class="cl-d2d0616c"><span class="cl-d2cf2216">8.7%</span></p></td><td class="cl-d2d0709e"><p class="cl-d2d0616c"><span class="cl-d2cf2216">48.63%</span></p></td><td class="cl-d2d0709f"><p class="cl-d2d0616c"><span class="cl-d2cf2216">6.98%</span></p></td><td class="cl-d2d070a0"><p class="cl-d2d0616c"><span class="cl-d2cf2216">39.02%</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d2d07096"><p class="cl-d2d06162"><span class="cl-d2cf2216">3.6</span></p></td><td class="cl-d2d07097"><p class="cl-d2d0616c"><span class="cl-d2cf2216">3</span></p></td><td class="cl-d2d07098"><p class="cl-d2d0616c"><span class="cl-d2cf2216">0.12%</span></p></td><td class="cl-d2d0709e"><p class="cl-d2d0616c"><span class="cl-d2cf2216">48.74%</span></p></td><td class="cl-d2d0709f"><p class="cl-d2d0616c"><span class="cl-d2cf2216">0.09%</span></p></td><td class="cl-d2d070a0"><p class="cl-d2d0616c"><span class="cl-d2cf2216">39.11%</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d2d07096"><p class="cl-d2d06162"><span class="cl-d2cf2216">3.66666666666667</span></p></td><td class="cl-d2d07097"><p class="cl-d2d0616c"><span class="cl-d2cf2216">256</span></p></td><td class="cl-d2d07098"><p class="cl-d2d0616c"><span class="cl-d2cf2216">9.9%</span></p></td><td class="cl-d2d0709e"><p class="cl-d2d0616c"><span class="cl-d2cf2216">58.64%</span></p></td><td class="cl-d2d0709f"><p class="cl-d2d0616c"><span class="cl-d2cf2216">7.94%</span></p></td><td class="cl-d2d070a0"><p class="cl-d2d0616c"><span class="cl-d2cf2216">47.05%</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d2d07096"><p class="cl-d2d06162"><span class="cl-d2cf2216">3.83333333333333</span></p></td><td class="cl-d2d07097"><p class="cl-d2d0616c"><span class="cl-d2cf2216">241</span></p></td><td class="cl-d2d07098"><p class="cl-d2d0616c"><span class="cl-d2cf2216">9.32%</span></p></td><td class="cl-d2d0709e"><p class="cl-d2d0616c"><span class="cl-d2cf2216">67.96%</span></p></td><td class="cl-d2d0709f"><p class="cl-d2d0616c"><span class="cl-d2cf2216">7.48%</span></p></td><td class="cl-d2d070a0"><p class="cl-d2d0616c"><span class="cl-d2cf2216">54.53%</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d2d07096"><p class="cl-d2d06162"><span class="cl-d2cf2216">4</span></p></td><td class="cl-d2d07097"><p class="cl-d2d0616c"><span class="cl-d2cf2216">220</span></p></td><td class="cl-d2d07098"><p class="cl-d2d0616c"><span class="cl-d2cf2216">8.5%</span></p></td><td class="cl-d2d0709e"><p class="cl-d2d0616c"><span class="cl-d2cf2216">76.46%</span></p></td><td class="cl-d2d0709f"><p class="cl-d2d0616c"><span class="cl-d2cf2216">6.82%</span></p></td><td class="cl-d2d070a0"><p class="cl-d2d0616c"><span class="cl-d2cf2216">61.35%</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d2d07096"><p class="cl-d2d06162"><span class="cl-d2cf2216">4.16666666666667</span></p></td><td class="cl-d2d07097"><p class="cl-d2d0616c"><span class="cl-d2cf2216">171</span></p></td><td class="cl-d2d07098"><p class="cl-d2d0616c"><span class="cl-d2cf2216">6.61%</span></p></td><td class="cl-d2d0709e"><p class="cl-d2d0616c"><span class="cl-d2cf2216">83.07%</span></p></td><td class="cl-d2d0709f"><p class="cl-d2d0616c"><span class="cl-d2cf2216">5.3%</span></p></td><td class="cl-d2d070a0"><p class="cl-d2d0616c"><span class="cl-d2cf2216">66.66%</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d2d07096"><p class="cl-d2d06162"><span class="cl-d2cf2216">4.2</span></p></td><td class="cl-d2d07097"><p class="cl-d2d0616c"><span class="cl-d2cf2216">2</span></p></td><td class="cl-d2d07098"><p class="cl-d2d0616c"><span class="cl-d2cf2216">0.08%</span></p></td><td class="cl-d2d0709e"><p class="cl-d2d0616c"><span class="cl-d2cf2216">83.15%</span></p></td><td class="cl-d2d0709f"><p class="cl-d2d0616c"><span class="cl-d2cf2216">0.06%</span></p></td><td class="cl-d2d070a0"><p class="cl-d2d0616c"><span class="cl-d2cf2216">66.72%</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d2d07096"><p class="cl-d2d06162"><span class="cl-d2cf2216">4.33333333333333</span></p></td><td class="cl-d2d07097"><p class="cl-d2d0616c"><span class="cl-d2cf2216">153</span></p></td><td class="cl-d2d07098"><p class="cl-d2d0616c"><span class="cl-d2cf2216">5.91%</span></p></td><td class="cl-d2d0709e"><p class="cl-d2d0616c"><span class="cl-d2cf2216">89.06%</span></p></td><td class="cl-d2d0709f"><p class="cl-d2d0616c"><span class="cl-d2cf2216">4.75%</span></p></td><td class="cl-d2d070a0"><p class="cl-d2d0616c"><span class="cl-d2cf2216">71.46%</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d2d07096"><p class="cl-d2d06162"><span class="cl-d2cf2216">4.4</span></p></td><td class="cl-d2d07097"><p class="cl-d2d0616c"><span class="cl-d2cf2216">2</span></p></td><td class="cl-d2d07098"><p class="cl-d2d0616c"><span class="cl-d2cf2216">0.08%</span></p></td><td class="cl-d2d0709e"><p class="cl-d2d0616c"><span class="cl-d2cf2216">89.14%</span></p></td><td class="cl-d2d0709f"><p class="cl-d2d0616c"><span class="cl-d2cf2216">0.06%</span></p></td><td class="cl-d2d070a0"><p class="cl-d2d0616c"><span class="cl-d2cf2216">71.53%</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d2d07096"><p class="cl-d2d06162"><span class="cl-d2cf2216">4.5</span></p></td><td class="cl-d2d07097"><p class="cl-d2d0616c"><span class="cl-d2cf2216">104</span></p></td><td class="cl-d2d07098"><p class="cl-d2d0616c"><span class="cl-d2cf2216">4.02%</span></p></td><td class="cl-d2d0709e"><p class="cl-d2d0616c"><span class="cl-d2cf2216">93.16%</span></p></td><td class="cl-d2d0709f"><p class="cl-d2d0616c"><span class="cl-d2cf2216">3.23%</span></p></td><td class="cl-d2d070a0"><p class="cl-d2d0616c"><span class="cl-d2cf2216">74.75%</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d2d07096"><p class="cl-d2d06162"><span class="cl-d2cf2216">4.6</span></p></td><td class="cl-d2d07097"><p class="cl-d2d0616c"><span class="cl-d2cf2216">1</span></p></td><td class="cl-d2d07098"><p class="cl-d2d0616c"><span class="cl-d2cf2216">0.04%</span></p></td><td class="cl-d2d0709e"><p class="cl-d2d0616c"><span class="cl-d2cf2216">93.2%</span></p></td><td class="cl-d2d0709f"><p class="cl-d2d0616c"><span class="cl-d2cf2216">0.03%</span></p></td><td class="cl-d2d070a0"><p class="cl-d2d0616c"><span class="cl-d2cf2216">74.78%</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d2d07096"><p class="cl-d2d06162"><span class="cl-d2cf2216">4.66666666666667</span></p></td><td class="cl-d2d07097"><p class="cl-d2d0616c"><span class="cl-d2cf2216">68</span></p></td><td class="cl-d2d07098"><p class="cl-d2d0616c"><span class="cl-d2cf2216">2.63%</span></p></td><td class="cl-d2d0709e"><p class="cl-d2d0616c"><span class="cl-d2cf2216">95.83%</span></p></td><td class="cl-d2d0709f"><p class="cl-d2d0616c"><span class="cl-d2cf2216">2.11%</span></p></td><td class="cl-d2d070a0"><p class="cl-d2d0616c"><span class="cl-d2cf2216">76.89%</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d2d07096"><p class="cl-d2d06162"><span class="cl-d2cf2216">4.83333333333333</span></p></td><td class="cl-d2d07097"><p class="cl-d2d0616c"><span class="cl-d2cf2216">41</span></p></td><td class="cl-d2d07098"><p class="cl-d2d0616c"><span class="cl-d2cf2216">1.58%</span></p></td><td class="cl-d2d0709e"><p class="cl-d2d0616c"><span class="cl-d2cf2216">97.41%</span></p></td><td class="cl-d2d0709f"><p class="cl-d2d0616c"><span class="cl-d2cf2216">1.27%</span></p></td><td class="cl-d2d070a0"><p class="cl-d2d0616c"><span class="cl-d2cf2216">78.16%</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d2d0708a"><p class="cl-d2d06162"><span class="cl-d2cf2216">[5] authoritarian</span></p></td><td class="cl-d2d0708b"><p class="cl-d2d0616c"><span class="cl-d2cf2216">67</span></p></td><td class="cl-d2d0708c"><p class="cl-d2d0616c"><span class="cl-d2cf2216">2.59%</span></p></td><td class="cl-d2d0708d"><p class="cl-d2d0616c"><span class="cl-d2cf2216">100%</span></p></td><td class="cl-d2d07094"><p class="cl-d2d0616c"><span class="cl-d2cf2216">2.08%</span></p></td><td class="cl-d2d07095"><p class="cl-d2d0616c"><span class="cl-d2cf2216">80.24%</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d2d070a1"><p class="cl-d2d06162"><span class="cl-d2cf2216">[-1] skip, didn`t return SC questionnaire</span></p></td><td class="cl-d2d070a2"><p class="cl-d2d0616c"><span class="cl-d2cf2216">588</span></p></td><td class="cl-d2d070a8"><p class="cl-d2d0616c"><span class="cl-d2cf2216"></span></p></td><td class="cl-d2d070a9"><p class="cl-d2d0616c"><span class="cl-d2cf2216"></span></p></td><td class="cl-d2d070aa"><p class="cl-d2d0616c"><span class="cl-d2cf2216">18.24%</span></p></td><td class="cl-d2d070b2"><p class="cl-d2d0616c"><span class="cl-d2cf2216">98.48%</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d2d070b3"><p class="cl-d2d06162"><span class="cl-d2cf2216">[9] Missing values</span></p></td><td class="cl-d2d070b4"><p class="cl-d2d0616c"><span class="cl-d2cf2216">49</span></p></td><td class="cl-d2d070b5"><p class="cl-d2d0616c"><span class="cl-d2cf2216"></span></p></td><td class="cl-d2d070b6"><p class="cl-d2d0616c"><span class="cl-d2cf2216"></span></p></td><td class="cl-d2d070bc"><p class="cl-d2d0616c"><span class="cl-d2cf2216">1.52%</span></p></td><td class="cl-d2d070bd"><p class="cl-d2d0616c"><span class="cl-d2cf2216">100%</span></p></td></tr></tbody></table></div>
+</div>
+</div>
+<p><br></p>
+</section>
+</section>
+<section id="write-function" class="level2" data-number="4.4">
+<h2 data-number="4.4" class="anchored" data-anchor-id="write-function"><span class="header-section-number">4.4</span> Write function</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Collect both functions as named list</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>fns <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">freq_spss       =</span> freq_spss,</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">.freq_format_table =</span> .freq_format_table</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Write each to the same file, separated by a blank line</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="fu">writeLines</span>(</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unlist</span>(<span class="fu">lapply</span>(<span class="fu">names</span>(fns), <span class="cf">function</span>(nm) {</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">c</span>(<span class="fu">paste0</span>(nm, <span class="st">" &lt;- "</span>), <span class="fu">deparse</span>(fns[[nm]]), <span class="st">""</span>)</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>  })),</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>  <span class="st">"/Users/joecrowley/R/Exploratory/Scripts/freq_spss.R"</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation column-body">
+  <div class="nav-page nav-page-previous">
+      <a href="./Data dictionary.html" class="pagination-link" aria-label="Data dictionary">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Data dictionary</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./Overview of SPSS data.html" class="pagination-link" aria-label="Overview of SPSS data">
+        <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Overview of SPSS data</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
