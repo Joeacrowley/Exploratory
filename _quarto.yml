@@ -12,6 +12,9 @@ book:
         - Data dictionary.qmd
         - Frequency function for SPSS.qmd
         - Overview of SPSS data.qmd
+    - part: "Exporting results"
+      chapters:
+        - export_to_powerpoint.qmd
     
 format:
   html:

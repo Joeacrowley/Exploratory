@@ -307,5 +307,137 @@
       "Dataset overview",
       "<span class='chapter-number'>2</span>  <span class='chapter-title'>look_for2</span>"
     ]
+  },
+  {
+    "objectID": "export_to_powerpoint.html",
+    "href": "export_to_powerpoint.html",
+    "title": "6  Export to PowerPoint",
+    "section": "",
+    "text": "6.1 Creat empty PowerPoint\ncreate_empty_ppt &lt;- function(file){\n    read_pptx(file)\n}\n\nppt &lt;- create_empty_ppt(file = \"/Users/joecrowley/R/Exploratory/my_template.pptx\")\n\nwriteLines(\n  c(\"create_empty_ppt &lt;- \", # Assignment needs to be added manually\n    deparse(create_empty_ppt)), # Extract function code\n  paste0(functions_folder,\"/create_empty_ppt.R\")) # File name is just the function name",
+    "crumbs": [
+      "Exporting results",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Export to PowerPoint</span>"
+    ]
+  },
+  {
+    "objectID": "export_to_powerpoint.html#names-of-available-styles",
+    "href": "export_to_powerpoint.html#names-of-available-styles",
+    "title": "6  Export to PowerPoint",
+    "section": "6.2 Names of available styles",
+    "text": "6.2 Names of available styles\n\navailable_style_names &lt;- function(slides){\n\n  layout_properties(slides) %&gt;%\n    filter(grepl(\"mint\", name, ignore.case = T) |\n             name %in% c(\"Title and full width content\",\n                         \"Title and two column content\",\n                         \"Title and full width table with description\",\n                         \"Title and full width chart with description\",\n                         \"Text and chart with source\"\n             )) %&gt;%\n    select(name) %&gt;% unique() %&gt;% unlist %&gt;% unname()\n\n}\n\navailable_style_names(ppt)\n\n[1] \"Title and full width content\"               \n[2] \"Title and two column content\"               \n[3] \"Title and full width table with description\"\n[4] \"Title and full width chart with description\"\n[5] \"Text and chart with source\"                 \n\nwriteLines(\n  c(\"available_style_names &lt;- \", # Assignment needs to be added manually\n    deparse(available_style_names)), # Extract function code\n  paste0(functions_folder,\"/available_style_names.R\")) # File name is just the function name",
+    "crumbs": [
+      "Exporting results",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Export to PowerPoint</span>"
+    ]
+  },
+  {
+    "objectID": "export_to_powerpoint.html#available-styles",
+    "href": "export_to_powerpoint.html#available-styles",
+    "title": "6  Export to PowerPoint",
+    "section": "6.3 Available styles",
+    "text": "6.3 Available styles\nThis shows the name of the objects (text boxes etc) inside the slide templates.\n\navailable_styles &lt;- function(slides){\n\n    layout_properties(slides) %&gt;%\n    filter(grepl(\"mint\", name, ignore.case = T) |\n             name %in% c(\n               \"Title: Green\", \n               \"Divider: Green\", \n               \"End message: Green\",\n               \"Title and full width content\",\n               \"Title and two column content\",\n               \"Title and full width table with description\",\n               \"Title and full width chart with description\",\n               \"Text and chart with source\"\n             )) %&gt;%\n    select(name, type, type_idx, id, ph_label)\n\n}\n\nstyles_to_use &lt;- available_styles(ppt)\nstyles_to_use %&gt;% filter(name == \"Title: Green\")\n\n          name     type type_idx id             ph_label\n1 Title: Green     body        1  4 Straight Connector 3\n2 Title: Green ctrTitle        1  2   Text Placeholder 9\n3 Title: Green subTitle        1  3           Subtitle 2\n4 Title: Green     body        2  5 Straight Connector 4\n\nwriteLines(\n  c(\"available_styles &lt;- \", # Assignment needs to be added manually\n    deparse(available_styles)), # Extract function code\n  paste0(functions_folder,\"/available_styles.R\")) # File name is just the function name",
+    "crumbs": [
+      "Exporting results",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Export to PowerPoint</span>"
+    ]
+  },
+  {
+    "objectID": "export_to_powerpoint.html#title",
+    "href": "export_to_powerpoint.html#title",
+    "title": "6  Export to PowerPoint",
+    "section": "6.4 Title",
+    "text": "6.4 Title\n\n# title\nstyles_to_use %&gt;% filter(name == \"Title: Green\")\n\n          name     type type_idx id             ph_label\n1 Title: Green     body        1  4 Straight Connector 3\n2 Title: Green ctrTitle        1  2   Text Placeholder 9\n3 Title: Green subTitle        1  3           Subtitle 2\n4 Title: Green     body        2  5 Straight Connector 4\n\nadd_title_slide &lt;- function(slides, title, subtitle = NULL){\n\n  slides &lt;- slides |&gt;\n    add_slide(layout = \"Title: Green\", master = \"Sage Mint Theme\") |&gt;\n    ph_with(title, ph_location_label(ph_label = \"Text Placeholder 9\"))\n\n  if(!is.null(subtitle)){  slides &lt;- slides |&gt;\n    ph_with(subtitle, ph_location_label(ph_label = \"Subtitle 2\"))\n  }\n\n}\n\n# Example...\nppt &lt;- add_title_slide(\n  ppt,\n  title = \"Title text example\",\n  subtitle = c(\"Can you have multiple strings\",\"in the subtitle?\"))\n# You can, if your subtitle vector has multiple elements the resulting\n# subtitle is split over multiple lines.\n\n\nwriteLines(\n  c(\"add_title_slide &lt;- \", # Assignment needs to be added manually\n    deparse(add_title_slide)), # Extract function code\n  paste0(functions_folder,\"/add_title_slide.R\")) # File name is just the function name",
+    "crumbs": [
+      "Exporting results",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Export to PowerPoint</span>"
+    ]
+  },
+  {
+    "objectID": "export_to_powerpoint.html#divider-slide",
+    "href": "export_to_powerpoint.html#divider-slide",
+    "title": "6  Export to PowerPoint",
+    "section": "6.5 Divider slide",
+    "text": "6.5 Divider slide\n\nstyles_to_use %&gt;% filter(name == \"Divider: Green\")\n\n            name type type_idx id             ph_label\n1 Divider: Green body        1  5 Straight Connector 4\n2 Divider: Green body        2  3           Subtitle 2\n3 Divider: Green body        3  2   Text Placeholder 9\n4 Divider: Green  ftr        1  4 Straight Connector 3\n5 Divider: Green body        4  6 Straight Connector 5\n\nadd_divider_slide &lt;- function(slides, text, footer = NULL, header = NULL){\n\n  slides &lt;- slides |&gt;\n    add_slide(layout = \"Divider: Green\", master = \"Sage Mint Theme\") |&gt;\n    ph_with(text, ph_location_label(ph_label = \"Text Placeholder 9\"))\n\n  if(!is.null(footer)){  slides &lt;- slides |&gt;\n    ph_with(footer, ph_location_label(ph_label = \"Straight Connector 3\"))\n  }\n\n  if(!is.null(header)){  slides &lt;- slides |&gt;\n    ph_with(header, ph_location_label(ph_label = \"Subtitle 2\")) # alleged subtitle, not really.\n  }\n\n}\n\n# Example...\nppt &lt;- add_divider_slide(\n  ppt,\n  text = \"Title for divider slide\",\n  footer = c(\"Can you have multiple strings in the footer?\", \"Yes, but they'll appear off screen\"),\n  header = \"Header\")\n\nwriteLines(\n  c(\"add_divider_slide &lt;- \", # Assignment needs to be added manually\n    deparse(add_divider_slide)), # Extract function code\n  paste0(functions_folder,\"/add_divider_slide.R\")) # File name is just the function name",
+    "crumbs": [
+      "Exporting results",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Export to PowerPoint</span>"
+    ]
+  },
+  {
+    "objectID": "export_to_powerpoint.html#title-and-full-width-content",
+    "href": "export_to_powerpoint.html#title-and-full-width-content",
+    "title": "6  Export to PowerPoint",
+    "section": "6.6 Title and full width content",
+    "text": "6.6 Title and full width content\n\nstyles_to_use %&gt;% filter(name == \"Title and full width content\")\n\n                          name  type type_idx id              ph_label\n1 Title and full width content  body        1  6  Straight Connector 5\n2 Title and full width content title        1  2               Title 1\n3 Title and full width content  body        2  3 Content Placeholder 2\n4 Title and full width content  body        3  5                Footer\n5 Title and full width content  body        4  7  Straight Connector 6\n\nfull_width_content_slide &lt;- function(slides, title, text, footer = NULL){\n\n  slides &lt;- slides |&gt;\n    add_slide(layout = \"Title and full width content\", master = \"Sage Mint Theme\") |&gt;\n    ph_with(title, ph_location_label(ph_label = \"Title 1\")) |&gt;\n    ph_with(text, ph_location_label(ph_label = \"Content Placeholder 2\"))\n\n\n  if(!is.null(footer)){  slides &lt;- slides |&gt;\n    ph_with(footer, ph_location_label(ph_label = \"Footer\"))\n  }\n\n\n}\n\n# Weirdly, you don't seem to need to assign the output to an object for it to\n# updated. Which is good. But how / why / what the fuck?\nfull_width_content_slide(\n  slides = ppt,\n  title = \"Title\",\n  text = c(\"Test text\", \"test\", \"living\"),\n  footer = \"Footer\"\n)\n\n\nwriteLines(\n  c(\"full_width_content_slide &lt;- \", # Assignment needs to be added manually\n    deparse(full_width_content_slide)), # Extract function code\n  paste0(functions_folder,\"/full_width_content_slide.R\")) # File name is just the function name",
+    "crumbs": [
+      "Exporting results",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Export to PowerPoint</span>"
+    ]
+  },
+  {
+    "objectID": "export_to_powerpoint.html#title-and-two-column-content",
+    "href": "export_to_powerpoint.html#title-and-two-column-content",
+    "title": "6  Export to PowerPoint",
+    "section": "6.7 Title and two column content",
+    "text": "6.7 Title and two column content\n\nstyles_to_use %&gt;% filter(name == \"Title and two column content\")\n\n                          name  type type_idx id             ph_label\n1 Title and two column content  body        1  5 Straight Connector 4\n2 Title and two column content title        1  2              Title 1\n3 Title and two column content  body        2  8 Straight Connector 7\n4 Title and two column content  body        3  3         Left Content\n5 Title and two column content  body        4  4        Right Content\n6 Title and two column content  body        5  7               Footer\n7 Title and two column content  body        6  6 Straight Connector 5\n\ndouble_text_column_slide &lt;- function(slides, title, left_text = NULL, right_text = NULL, footer = NULL){\n\n  slides &lt;- slides |&gt;\n    add_slide(layout = \"Title and two column content\", master = \"Sage Mint Theme\") |&gt;\n    ph_with(title, ph_location_label(ph_label = \"Title 1\"))\n\n  if(!is.null(left_text)){  slides &lt;- slides |&gt;\n    ph_with(left_text, ph_location_type(type = \"body\", type_idx = 3))\n  }\n\n  if(!is.null(right_text)){  slides &lt;- slides |&gt;\n    ph_with(right_text, ph_location_type(type = \"body\", type_idx = 4))\n  }\n\n  if(!is.null(footer)){  slides &lt;- slides |&gt;\n    ph_with(footer, ph_location_label(ph_label = \"Footer\"))\n  }\n\n}\n\ndouble_text_column_slide(\n  slides = ppt,\n  title = \"Title\",\n  left_text = c(\"Left_text\", \"test\", \"living\"),\n  right_text = c(\"Right text\", \"test\", \"living\"),\n  footer = \"Footer\"\n)\n\nwriteLines(\n  c(\"double_text_column_slide &lt;- \", # Assignment needs to be added manually\n    deparse(double_text_column_slide)), # Extract function code\n  paste0(functions_folder,\"/double_text_column_slide.R\")) # File name is just the function name",
+    "crumbs": [
+      "Exporting results",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Export to PowerPoint</span>"
+    ]
+  },
+  {
+    "objectID": "export_to_powerpoint.html#title-and-full-width-table-with-description",
+    "href": "export_to_powerpoint.html#title-and-full-width-table-with-description",
+    "title": "6  Export to PowerPoint",
+    "section": "6.8 Title and full width table with description",
+    "text": "6.8 Title and full width table with description\n\n\n6.8.1 Supporting function to find table size\n\nstyles_to_use %&gt;% filter(name == \"Title and full width table with description\")\n\n                                         name  type type_idx id\n1 Title and full width table with description  body        1  5\n2 Title and full width table with description title        1  2\n3 Title and full width table with description  body        2  3\n4 Title and full width table with description   tbl        1  4\n5 Title and full width table with description  body        3  6\n6 Title and full width table with description  body        4  7\n              ph_label\n1 Straight Connector 4\n2              Title 1\n3          Description\n4           Table Area\n5               Footer\n6 Straight Connector 6\n\n# Max height of table space - 8.42cm, converted to 3.314961 inches in code below\n# Max width of table space - 30.86cm\n\n# use for big tables only really.\nft_mtcars &lt;- mtcars %&gt;% rownames_to_column() %&gt;% slice(1:15) %&gt;% flextable::flextable() %&gt;% flextable::theme_zebra() %&gt;% flextable::autofit()\n\nft_mtcars %&gt;%\n  flextable::fit_to_width(max_width = 30.86, unit = \"cm\") # But not height constraining equivalent\n\nrownamempgcyldisphpdratwtqsecvsamgearcarbMazda RX421.06160.01103.902.62016.460144Mazda RX4 Wag21.06160.01103.902.87517.020144Datsun 71022.84108.0933.852.32018.611141Hornet 4 Drive21.46258.01103.083.21519.441031Hornet Sportabout18.78360.01753.153.44017.020032Valiant18.16225.01052.763.46020.221031Duster 36014.38360.02453.213.57015.840034Merc 240D24.44146.7623.693.19020.001042Merc 23022.84140.8953.923.15022.901042Merc 28019.26167.61233.923.44018.301044Merc 280C17.86167.61233.923.44018.901044Merc 450SE16.48275.81803.074.07017.400033Merc 450SL17.38275.81803.073.73017.600033Merc 450SLC15.28275.81803.073.78018.000033Cadillac Fleetwood10.48472.02052.935.25017.980034\n\n# Helper function to limit export height.\n# This is a chatgpt functions, it requires measurement in inches, unclear to me why.\nfit_to_height &lt;- function(ft, max_height, add_header = TRUE) {\n\n  # --- Step 1: compute \"natural\" table height in inches\n  # flextable dims are in inches\n  dims &lt;- flextable::flextable_dim(ft)\n  natural_height &lt;- dims$height\n\n  # --- Step 2: reduce padding if needed\n  if (natural_height &gt; max_height) {\n    ft &lt;- flextable::padding(ft, padding.top = 1, padding.bottom = 1, part = \"all\")\n\n    # recompute dimensions after padding shrink\n    dims &lt;- flextable::flextable_dim(ft)\n    natural_height &lt;- dims$height\n  }\n\n  # Count rows (optionally include header)\n  if (natural_height &gt; max_height) {\n\n    n_rows &lt;- flextable::nrow_part(ft, part = \"body\")\n    if (add_header) {\n      n_rows &lt;- n_rows + flextable::nrow_part(ft, part = \"header\")\n    }\n\n    # Compute uniform row height\n    row_height &lt;- max_height / n_rows\n\n    # Apply height to all parts\n    ft &lt;- flextable::height_all(ft, height = row_height)\n  }\n\n  return(ft)\n}\n\n\nft_mtcars %&gt;%\n   fit_to_height(max_height = 3.314961) %&gt;%\n   flextable::fit_to_width(max_width = 30.86, unit = \"cm\")\n\nrownamempgcyldisphpdratwtqsecvsamgearcarbMazda RX421.06160.01103.902.62016.460144Mazda RX4 Wag21.06160.01103.902.87517.020144Datsun 71022.84108.0933.852.32018.611141Hornet 4 Drive21.46258.01103.083.21519.441031Hornet Sportabout18.78360.01753.153.44017.020032Valiant18.16225.01052.763.46020.221031Duster 36014.38360.02453.213.57015.840034Merc 240D24.44146.7623.693.19020.001042Merc 23022.84140.8953.923.15022.901042Merc 28019.26167.61233.923.44018.301044Merc 280C17.86167.61233.923.44018.901044Merc 450SE16.48275.81803.074.07017.400033Merc 450SL17.38275.81803.073.73017.600033Merc 450SLC15.28275.81803.073.78018.000033Cadillac Fleetwood10.48472.02052.935.25017.980034\n\n\n\n\n\n6.8.2 Actual function to pass table to slide\n\nfull_width_table_slide &lt;- function(slides, title, text, table, footer = NULL, control_height = T){\n\n  if(control_height == T){\n  table_height_managed &lt;- table %&gt;%\n    fit_to_height(max_height = 3.314961) %&gt;%\n    flextable::fit_to_width(max_width = 30.86, unit = \"cm\")\n  } else {table_height_managed &lt;- table}\n\n  slides &lt;- slides |&gt;\n    add_slide(layout = \"Title and full width table with description\", master = \"Sage Mint Theme\") |&gt;\n    ph_with(title, ph_location_label(ph_label = \"Title 1\")) |&gt;\n    ph_with(text, ph_location_type(type = \"body\", type_idx = 2)) |&gt;\n    ph_with(table_height_managed, ph_location_type(type = \"tbl\"))\n\n  if(!is.null(footer)){ slides &lt;- slides |&gt;\n    ph_with(footer, ph_location_label(ph_label = \"Footer\"))\n  }\n\n}\n\nfull_width_table_slide(\n  slides = ppt,\n  title = \"Full width table slide\",\n  text = c(\"Description text\",\"Here table is shrunk a bit to fit\", \"if table too big, still wont' fit\"),\n  table = ft_mtcars,\n  footer = \"Footer text\"\n)\n\nfull_width_table_slide(\n  slides = ppt,\n  title = \"Full width table slide\",\n  text = \"Description text. Here is an unshrunk table, too big\",\n  table = ft_mtcars,\n  footer = \"Footer text\",\n  control_height = F\n)\n\nwriteLines(\n  c(\"full_width_table_slide &lt;- \", # Assignment needs to be added manually\n    deparse(full_width_table_slide)), # Extract function code\n  paste0(functions_folder,\"/full_width_table_slide.R\")) # File name is just the function name\n\nwriteLines(\n  c(\"fit_to_height &lt;- \", # Assignment needs to be added manually\n    deparse(fit_to_height)), # Extract function code\n  paste0(functions_folder,\"/fit_to_height.R\")) # File name is just the function name",
+    "crumbs": [
+      "Exporting results",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Export to PowerPoint</span>"
+    ]
+  },
+  {
+    "objectID": "export_to_powerpoint.html#a-flextable-function",
+    "href": "export_to_powerpoint.html#a-flextable-function",
+    "title": "6  Export to PowerPoint",
+    "section": "6.9 A flextable function",
+    "text": "6.9 A flextable function\n\n# And also a flextable set up function...\n# Converts a dataframe to a flextable\n# Position other flextable edits after this...\n\n# Set caption to a character string with the title.\n# make_flex &lt;- function(df, caption = F, digits = 0) {\n#\n#   table_width &lt;- ncol(df)\n#\n#   ft &lt;- df %&gt;%\n#     flextable::flextable() %&gt;%\n#     flextable::set_table_properties(layout = 'autofit', width = 1) %&gt;%\n#     flextable::theme_zebra(\n#       odd_header = \"grey90\",\n#       odd_body = \"white\",\n#       even_body = \"#f3f8fc\"   # very gentle light blue\n#     ) %&gt;%\n#       flextable::hline(i = 1, part = \"header\", border = fp_border(color = \"black\", width = 1)) %&gt;%\n#       flextable::hline_bottom(part = \"body\", border = fp_border(color = \"black\", width = 1)) %&gt;%\n#     flextable::colformat_double(digits = digits)\n#\n#   if(caption != F){\n#     ft &lt;- ft %&gt;% flextable::add_header_row(values = caption, colwidths = table_width)\n#   }\n#\n#   return(ft)\n#\n# }\n\nmake_flex &lt;- function(df, caption = F, digits = 0) {\n\n  table_width &lt;- ncol(df)\n\n  ft &lt;- df %&gt;%\n    flextable::flextable() %&gt;%\n    flextable::set_table_properties(layout = 'autofit', width = 1) %&gt;%\n    flextable::theme_zebra(\n      odd_header = \"grey90\",\n      odd_body = \"white\",\n      even_body = \"#f3f8fc\"   # very gentle light blue\n    ) %&gt;%\n    border(part = \"body\", border = fp_border(color = \"grey80\", width = 1)) %&gt;%\n    flextable::hline(i = 1, part = \"header\", border = fp_border(color = \"black\", width = 1)) %&gt;%\n    flextable::hline_bottom(part = \"body\", border = fp_border(color = \"black\", width = 1)) %&gt;%\n    flextable::colformat_double(digits = digits)\n\n  if(caption != F){\n    ft &lt;- ft %&gt;% flextable::set_caption(caption = caption,\n                                        autonum = run_autonum(seq_id = \"tab\"),\n                                        word_stylename = \"Table: Heading row_\"\n                                        )\n  }\n\n  return(ft)\n\n}\n\nmtcars %&gt;% rownames_to_column() %&gt;% slice(1:15) %&gt;% make_flex()\n\nrownamempgcyldisphpdratwtqsecvsamgearcarbMazda RX421616011043160144Mazda RX4 Wag21616011043170144Datsun 7102341089342191141Hornet 4 Drive21625811033191031Hornet Sportabout19836017533170032Valiant18622510533201031Duster 36014836024534160034Merc 240D2441476243201042Merc 2302341419543231042Merc 28019616812343181044Merc 280C18616812343191044Merc 450SE16827618034170033Merc 450SL17827618034180033Merc 450SLC15827618034180033Cadillac Fleetwood10847220535180034\n\nwriteLines(\n  c(\"make_flex &lt;- \", # Assignment needs to be added manually\n    deparse(make_flex)), # Extract function code\n  paste0(functions_folder,\"/make_flex.R\")) # File name is just the function name",
+    "crumbs": [
+      "Exporting results",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Export to PowerPoint</span>"
+    ]
+  },
+  {
+    "objectID": "export_to_powerpoint.html#title-and-full-width-chart-with-description",
+    "href": "export_to_powerpoint.html#title-and-full-width-chart-with-description",
+    "title": "6  Export to PowerPoint",
+    "section": "6.10 Title and full width chart with description",
+    "text": "6.10 Title and full width chart with description\n\nstyles_to_use %&gt;% filter(name == \"Title and full width chart with description\")\n\n                                         name  type type_idx id\n1 Title and full width chart with description  body        1  6\n2 Title and full width chart with description title        1  2\n3 Title and full width chart with description  body        2  4\n4 Title and full width chart with description chart        1  3\n5 Title and full width chart with description  body        3  5\n6 Title and full width chart with description  body        4  8\n7 Title and full width chart with description  body        5  7\n              ph_label\n1 Straight Connector 5\n2              Title 1\n3          Description\n4           Chart Area\n5               Source\n6 Straight Connector 7\n7               Footer\n\n# Create a bar chart\nchart_example &lt;- ms_barchart(\n  data = mtcars %&gt;% rownames_to_column() %&gt;% slice(1:8),\n  x = \"rowname\",\n  y = \"mpg\"\n)\n\nfull_width_chart_slide &lt;- function(slides, title, text = NULL, chart, source = NULL, footer = NULL){\n\n  slides &lt;- slides |&gt;\n    add_slide(layout = \"Title and full width chart with description\", master = \"Sage Mint Theme\") |&gt;\n    ph_with(title, ph_location_label(ph_label = \"Title 1\")) |&gt;\n    ph_with(chart, ph_location_type(type = \"chart\"))\n\n  if(!is.null(text)){slides &lt;- slides |&gt;\n    ph_with(text, ph_location_type(type = \"body\", type_idx = 2))\n  }\n\n  if(!is.null(source)){slides &lt;- slides |&gt;\n    ph_with(source, ph_location_type(type = \"body\", type_idx = 3))\n  }\n\n  if(!is.null(footer)){slides &lt;- slides |&gt;\n    ph_with(footer, ph_location_label(ph_label = \"Footer\"))\n  }\n\n}\n\nfull_width_chart_slide(\n  slides = ppt,\n  title = \"Title for full width chart with description\",\n  text = c(\"The description text\", \"spread over lines\"),\n  chart = chart_example,\n  source = \"Source text\",\n  footer = \"Footer for chart\"\n)\n\nwriteLines(\n  c(\"full_width_chart_slide &lt;- \", # Assignment needs to be added manually\n    deparse(full_width_chart_slide)), # Extract function code\n  paste0(functions_folder,\"/full_width_chart_slide.R\")) # File name is just the function name",
+    "crumbs": [
+      "Exporting results",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Export to PowerPoint</span>"
+    ]
+  },
+  {
+    "objectID": "export_to_powerpoint.html#text-on-one-side-and-chart-on-the-other",
+    "href": "export_to_powerpoint.html#text-on-one-side-and-chart-on-the-other",
+    "title": "6  Export to PowerPoint",
+    "section": "6.11 Text on one side and chart on the other",
+    "text": "6.11 Text on one side and chart on the other\n\nstyles_to_use %&gt;% filter(name == \"Text and chart with source\")\n\n                        name  type type_idx id             ph_label\n1 Text and chart with source  body        1  6 Straight Connector 5\n2 Text and chart with source title        1  2              Title 1\n3 Text and chart with source  body        2  3            Text Area\n4 Text and chart with source chart        1  4           Chart Area\n5 Text and chart with source  body        3  5               Source\n6 Text and chart with source  body        4  8 Straight Connector 7\n7 Text and chart with source  body        5  7               Footer\n\ntext_and_chart_slide &lt;- function(slides, title, text, chart, source = NULL, footer = NULL){\n\n  slides &lt;- slides |&gt;\n    add_slide(layout = \"Text and chart with source\", master = \"Sage Mint Theme\") |&gt;\n    ph_with(title, ph_location_label(ph_label = \"Title 1\")) |&gt;\n    ph_with(text, ph_location_type(type = \"body\", type_idx = 2), ) |&gt;\n    ph_with(chart, ph_location_type(type = \"chart\"))\n\n  if(!is.null(source)){slides &lt;- slides |&gt;\n    ph_with(source, ph_location_type(type = \"body\", type_idx = 3))\n  }\n\n  if(!is.null(footer)){slides &lt;- slides |&gt;\n    ph_with(footer, ph_location_label(ph_label = \"Footer\"))\n  }\n\n}\n\ntext_and_chart_slide(\n  slides = ppt,\n  title = \"Slide with one column of text and one chart\",\n  text = \"The column of text\",\n  chart = chart_example,\n  source = \"Chart source\",\n  footer = \"Footer for slide\"\n)\n\nwriteLines(\n  c(\"text_and_chart_slide &lt;- \", # Assignment needs to be added manually\n    deparse(text_and_chart_slide)), # Extract function code\n  paste0(functions_folder,\"/text_and_chart_slide.R\")) # File name is just the function name",
+    "crumbs": [
+      "Exporting results",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Export to PowerPoint</span>"
+    ]
+  },
+  {
+    "objectID": "export_to_powerpoint.html#save-output-here",
+    "href": "export_to_powerpoint.html#save-output-here",
+    "title": "6  Export to PowerPoint",
+    "section": "6.12 Save output here",
+    "text": "6.12 Save output here\n\nprint(ppt, target = \"Example PowerPoint from functions.pptx\")",
+    "crumbs": [
+      "Exporting results",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Export to PowerPoint</span>"
+    ]
   }
 ]

@@ -2,10 +2,11 @@
 library(tidyverse)
 library(mschart)
 library(officer)
+library(here)
 
-# Set up powerpoint functions... 
-functions_folder <- "I:/Workdocs/Analysis team/Code Standardisation/Code library/Joe/Powerpoint/functions"
-map(list.files(functions_folder), ~source(paste0(functions_folder, "/", .x)))
+# Load PowerPoint functions from Scripts/ppt_functions/
+functions_folder <- here::here("Scripts", "ppt_functions")
+map(list.files(functions_folder, full.names = TRUE), source)
 
-# Create empty powerpoint
+# Create empty powerpoint (reads my_template.pptx in project root by default)
 ppt <- create_empty_ppt()
