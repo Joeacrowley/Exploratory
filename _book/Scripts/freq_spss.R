@@ -13,10 +13,10 @@ function (data, var, as_flextable = FALSE)
             var
         }
     }) %>% names, " - ", labelled::var_label(variable))
-    var_all <- variable %>% labelled::to_factor(levels = "prefixed") %>% 
-        forcats::fct_drop()
+    var_all <- variable %>% labelled::to_factor(levels = "prefixed", 
+        nolabel_to_na = FALSE) %>% forcats::fct_drop()
     var_no_NA <- variable %>% labelled::to_factor(levels = "prefixed", 
-        user_na_to_na = TRUE) %>% forcats::fct_drop()
+        user_na_to_na = TRUE, nolabel_to_na = FALSE) %>% forcats::fct_drop()
     user_na_vals <- attr(variable, "na_values")
     if (is.null(user_na_vals) || length(user_na_vals) == 0) {
         var_only_NA <- factor(character(0))
@@ -26,7 +26,7 @@ function (data, var, as_flextable = FALSE)
             labelled::to_factor(levels = "prefixed") %>% forcats::fct_drop()
     }
     valid_tbl <- var_no_NA %>% stats::na.omit() %>% forcats::fct_count(prop = TRUE) %>% 
-        dplyr::filter(!is.na(f)) %>% dplyr::mutate(cum_p = paste0(round(cumsum(p) * 
+        dplyr::filter(!is.na(f), n > 0) %>% dplyr::mutate(cum_p = paste0(round(cumsum(p) * 
         100, 2), "%"), p = paste0(round(p * 100, 2), "%"), type = "valid")
     user_na_tbl <- var_only_NA %>% forcats::fct_count(prop = FALSE) %>% 
         dplyr::mutate(type = "user_na")
@@ -36,13 +36,24 @@ function (data, var, as_flextable = FALSE)
         dplyr::full_join(total_tbl, by = "f") %>% dplyr::mutate(n = dplyr::coalesce(n.x, 
         n.y), type = dplyr::coalesce(type.x, type.y)) %>% dplyr::select(-n.x, 
         -n.y, -type.x, -type.y) %>% dplyr::arrange(desc(type == 
-        "valid"), f) %>% dplyr::mutate(cum_p_total = paste0(round(cumsum(total_p) * 
+        "valid"), f) %>% dplyr::select(type, f, n, p, cum_p, 
+        total_p)
+    table <- table %>% dplyr::filter(!is.na(f))
+    system_na_n <- sum(is.na(variable))
+    if (system_na_n > 0) {
+        total_n <- length(variable)
+        system_na_row <- dplyr::tibble(type = "system_na", f = factor("NA"), 
+            n = as.integer(system_na_n), p = NA_character_, cum_p = NA_character_, 
+            total_p = system_na_n/total_n)
+        table <- dplyr::bind_rows(table, system_na_row)
+    }
+    table <- table %>% dplyr::mutate(cum_p_total = paste0(round(cumsum(total_p) * 
         100, 2), "%"), total_p = paste0(round(total_p * 100, 
         2), "%")) %>% dplyr::select(type, f, n, p, cum_p, total_p, 
         cum_p_total)
     labels_full <- table %>% dplyr::pull(f)
     max_break_appearance <- labels_full %>% as.character() %>% 
-        stringr::str_count("]") %>% max
+        stringr::str_count("]") %>% max(na.rm = TRUE)
     if (max_break_appearance == 1 && length(labels_full) > 0) {
         splits <- labels_full %>% stringr::str_split("] ", n = 2)
         labels <- purrr::map_chr(splits, ~if (length(.x) >= 2) 
@@ -69,13 +80,17 @@ function (data, var, as_flextable = FALSE)
 function (tbl) 
 {
     tbl %>% flextable::flextable() %>% flextable::autofit() %>% 
-        flextable::bg(i = ~type == "user_na", j = NULL, bg = "lightgrey") %>% 
-        flextable::bg(i = ~type != "user_na", j = NULL, bg = "lightblue") %>% 
+        flextable::bg(i = ~type %in% c("user_na", "system_na"), 
+            j = NULL, bg = "lightgrey") %>% flextable::bg(i = ~!type %in% 
+        c("user_na", "system_na"), j = NULL, bg = "lightblue") %>% 
         flextable::bg(part = "header", bg = "lightgrey") %>% 
-        flextable::delete_columns("type") %>% flextable::set_header_labels(n = "Frequency", 
-        p = "Percentage", cum_p = "Cumulative %", total_p = "Total %", 
-        cum_p_total = "Total Cumulative %") %>% flextable::align(j = -1, 
-        align = "right", part = "all") %>% flextable::vline(j = c(1, 
-        2, 4), part = "all")
+        flextable::set_header_labels(n = "Frequency", p = "Percentage", 
+            cum_p = "Cumulative %", total_p = "%", cum_p_total = "Cumulative %") %>% 
+        flextable::add_header_row(values = c("", "", "", "Percentages (excluding missing values)", 
+            "Total"), colwidths = c(1, 1, 1, 2, 2)) %>% flextable::delete_columns("type") %>% 
+        flextable::merge_h(part = "header") %>% flextable::hline(i = 1, 
+        part = "header", border = officer::fp_border(width = 0)) %>% 
+        flextable::align(j = -1, align = "right", part = "all") %>% 
+        flextable::vline(j = c(1, 2, 4), part = "all")
 }
 

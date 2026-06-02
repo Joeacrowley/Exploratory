@@ -8,22 +8,27 @@ editor: visual
 
 ```{r packages and data, collapse = T}
 
+library(here)
 library(haven)
 library(tidyverse)
 library(labelled)
 library(flextable)
 
 # Load BSA teaching data
-df <- read_sav('/Users/joecrowley/R/Data/BSA Teaching Data/spss/spss25/bsa2019_poverty_open.sav', user_na = T)
-source("/Users/joecrowley/R/Exploratory/Scripts/freq_spss.R")
+df <- readRDS(here::here("data", "synthetic_bsa2019.rds"))
+source(here::here("Scripts", "freq_spss.R"))
+
+# Add missing value label for NatFrEst = 0
+labelled::val_labels(df$NatFrEst) <- c(labelled::val_labels(df$NatFrEst), c("Zero people broken law" = 0))
+
 vars <- names(df)
 labels <- df %>% var_label(unlist = T, null_action = "fill")
 
 ```
 
-<br> 
+<br>
 
-## Contents 
+## Contents
 
 ```{r contents, results='asis', echo = T}
 
@@ -38,25 +43,78 @@ for (xxx in 1:length(vars)){
 
 ```
 
-<br> 
+<br>
 
 ## Variable overview
 
+Each variable is presented below. Variables with 50 or fewer unique values are shown as a frequency table. Variables with more than 50 unique values are tested for numeric conversion: if fewer than 5% of values fail to convert, they are shown as a histogram with any non-numeric values tabulated separately; otherwise they are shown as a frequency table. Where a variable has more than 10 unique values and all convert cleanly to numeric, a histogram is shown alongside the frequency table.
+
 ```{r variable overview, results='asis', eval = T, echo=T, message=F, warning=F}
 
-for (var in vars){
-  
+for (var in vars) {
+
+  # Get the variable label before any conversion, falling back to the variable name
+  var_lbl         <- labelled::var_label(df[[var]]) %||% var
+
+  # Convert to factor. nolabel_to_na = FALSE keeps values without labels as their
+  # numeric codes rather than NAs, so numeric variables with a few labelled values
+  # (e.g. a sentinel 0 = "Zero people broken law") don't lose most of their data.
+  variable        <- df[[var]] %>% labelled::to_factor(user_na_to_na = TRUE, nolabel_to_na = FALSE)
+
+  # Count unique non-missing values after factor conversion
+  n_unique        <- variable %>% na.omit() %>% unique() %>% length()
+
+  # Try converting factor levels to numeric. Labelled values produce strings like
+  # "[0] Zero people broken law" which fail as.numeric() and become NA.
+  # Unlabelled values produce plain numeric strings like "23" which convert fine.
+  # pct_new_na is the share of originally non-missing values that fail conversion.
+  numeric_attempt <- suppressWarnings(as.numeric(as.character(variable)))
+  original_non_na <- !is.na(variable)
+  new_na          <- is.na(numeric_attempt) & original_non_na
+  pct_new_na      <- sum(new_na) / sum(original_non_na) * 100
+
   cat("\n")
   cat("[Contents] ")
   cat("\n\n\n")
   cat("### ", var, "\n")
-  freq_spss(data = df, var = var, as_flextable = TRUE) %>% flextable_to_rmd()
+
+  # Branch 1: ≤50 unique values (likely categorical) OR ≥5% fail numeric conversion.
+  # Always show a freq_spss table. Also show a histogram if the variable has more
+  # than 10 unique values and fewer than 5% fail numeric conversion —
+  # i.e. it is essentially numeric but has some labelled values worth tabulating.
+  if (n_unique <= 50 || pct_new_na >= 5) {
+
+    if (n_unique > 10 && pct_new_na < 5) {
+      p <- ggplot(data.frame(x = numeric_attempt), aes(x = x)) +
+        geom_histogram(bins = 30) +
+        labs(x = var, title = var_lbl) +
+        theme_minimal()
+      print(p)
+    }
+
+    freq_spss(data = df, var = !!rlang::sym(var), as_flextable = TRUE) %>%
+      flextable_to_rmd()
+
+  # Branch 2: >50 unique values AND <5% fail conversion — treat as continuous.
+  # Show a histogram. If any values failed numeric conversion (non-numeric labels),
+  # tabulate those separately below the histogram.
+  } else {
+
+    p <- ggplot(data.frame(x = numeric_attempt), aes(x = x)) +
+      geom_histogram(bins = 30) +
+      labs(x = var, title = var_lbl) +
+      theme_minimal()
+    print(p)
+
+    freq_spss(data = df, var = !!rlang::sym(var), as_flextable = TRUE) %>%
+      flextable_to_rmd()
+
+  }
+
   cat("\n")
   cat("<br>")
   cat("\n")
 
-
 }
 
 ```
-
