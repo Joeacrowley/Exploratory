@@ -3,18 +3,25 @@ title: "Export to PowerPoint"
 format: html
 editor: visual
 ---
-  
-  
+
+## Output PowerPoint
+
+- Local copy: [Example PowerPoint from functions.pptx](`r URLencode("Example PowerPoint from functions.pptx")`)
+- GitHub copy: [Example PowerPoint from functions.pptx](https://raw.githubusercontent.com/Joeacrowley/Exploratory/main/Example%20PowerPoint%20from%20functions.pptx)
+
+<br>
+
 ```{r packages, collapse = T}
 library(tidyverse)
 library(mschart)
 library(officer)
 library(flextable)
+library(here)
 
-functions_folder <- "/Users/joecrowley/R/Exploratory/Scripts/ppt_functions"
+functions_folder <- here::here("Scripts", "ppt_functions")
 ```
 
-<br> 
+<br>
 
 ## Creat empty PowerPoint
 
@@ -23,7 +30,7 @@ create_empty_ppt <- function(file){
     read_pptx(file)
 }
 
-ppt <- create_empty_ppt(file = "/Users/joecrowley/R/Exploratory/my_template.pptx")
+ppt <- create_empty_ppt(file = here::here("my_template.pptx"))
 
 writeLines(
   c("create_empty_ppt <- ", # Assignment needs to be added manually
@@ -32,7 +39,7 @@ writeLines(
 
 ```
 
-<br> 
+<br>
 
 ## Names of available styles
 
@@ -60,7 +67,7 @@ writeLines(
 
 ```
 
-<br> 
+<br>
 
 ## Available styles
 
@@ -96,7 +103,7 @@ writeLines(
 
 ```
 
-<br> 
+<br>
 
 ## Title
 
@@ -131,7 +138,7 @@ writeLines(
   paste0(functions_folder,"/add_title_slide.R")) # File name is just the function name
 ```
 
-<br> 
+<br>
 
 ## Divider slide
 
@@ -168,10 +175,9 @@ writeLines(
   paste0(functions_folder,"/add_divider_slide.R")) # File name is just the function name
 ```
 
-<br> 
+<br>
 
 ## Title and full width content
-
 
 ```{r}
 styles_to_use %>% filter(name == "Title and full width content")
@@ -192,7 +198,7 @@ full_width_content_slide <- function(slides, title, text, footer = NULL){
 }
 
 # Weirdly, you don't seem to need to assign the output to an object for it to
-# updated. Which is good. But how / why / what the fuck?
+# updated. Which is good. 
 full_width_content_slide(
   slides = ppt,
   title = "Title",
@@ -255,9 +261,9 @@ writeLines(
 
 ## Title and full width table with description
 
-<br> 
+<br>
 
-### Supporting function to find table size  
+### Supporting function to find table size
 
 ```{r}
 
@@ -314,7 +320,7 @@ ft_mtcars %>%
 
 ```
 
-<br> 
+<br>
 
 ### Actual function to pass table to slide
 
@@ -368,7 +374,7 @@ writeLines(
 
 ```
 
-<br> 
+<br>
 
 ## A flextable function
 
@@ -441,7 +447,7 @@ writeLines(
 
 ```
 
-<br> 
+<br>
 
 ## Title and full width chart with description
 
@@ -493,7 +499,7 @@ writeLines(
 
 ```
 
-<br> 
+<br>
 
 ## Text on one side and chart on the other
 
@@ -535,7 +541,7 @@ writeLines(
 
 ```
 
-<br> 
+<br>
 
 ## Save output here
 
