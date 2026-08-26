@@ -1,0 +1,118 @@
+---
+title: "Quick_descriptives: function reference and usage"
+format: html
+editor: visual
+---
+
+## What this is
+
+This document demonstrates the functions in the `QuickDescriptives` package. Unlike the old workflow (functions defined *inside* Quarto chunks, then `writeLines(deparse(...))`'d out to loose `.R` files), the functions here live in `../R/*.R` as ordinary package code with roxygen documentation. This `.qmd` only *uses* the package -- it doesn't define anything.
+
+While the package is still a pilot (not yet installed), `devtools::load_all()` loads it straight from source, same as `library()` would once installed.
+
+```{r setup}
+#| collapse: true
+library(tidyverse)
+library(haven)
+library(labelled)
+devtools::load_all("..")
+
+# Reuse the same synthetic dataset the Exploratory book uses.
+df <- readRDS(file.path("..", "..", "data", "synthetic_bsa2019.rds"))
+```
+
+<br>
+
+## Multiple frequencies
+
+### `count_across()`
+
+Stacks frequency counts for several variables into one long table.
+
+```{r}
+df |> count_across(vars = c("skipmeal", "Politics", "Poverty1"))
+```
+
+## Crosstabs
+
+### `ctab()`
+
+Two-way crosstab of one variable against a breakdown variable.
+
+```{r}
+ctab(df, skipmeal, RSex)
+```
+
+### `ctabs()` + `ctabs_xlsx()`
+
+Crosstabs several outcomes against several predictors at once, exportable to a formatted Excel workbook. `ctabs()` always returns an `overview` element too -- marginal frequencies (via `count_across()`) for every variable involved, outcomes and predictors alike -- alongside the `tables` element holding the actual crosstabs. This isn't optional: `ctabs_xlsx()` always writes it as the first ("Overview") sheet in the workbook.
+
+```{r}
+tbl <- df |> ctabs(vars = c("HEdQual3"), preds = c("RClassGp", "RAgeCat"))
+tbl$overview
+tbl$tables[[1]][[1]]
+```
+
+```{r}
+#| eval: false
+ctabs_xlsx(tbl, filename = "ctabs_export.xlsx")
+```
+
+### `mfreq()`
+
+Frequency table across several variables (works best when they share a common response scale; shown here with two unrelated categoricals just to demonstrate the mechanics).
+
+```{r}
+df |> select(Married, ChildHh) |> mfreq(labels = TRUE)
+```
+
+<br>
+
+## Missing data
+
+### `df_miss()`
+
+```{r}
+df |> df_miss() |> arrange(desc(p_miss)) |> head()
+```
+
+### `df_miss_brk()` + `df_miss_brk_h()`
+
+Missingness broken down by a grouping variable, formatted as a flextable.
+
+```{r}
+df |> df_miss_brk(brk = "RAgeCat", show = "perc_miss") |> df_miss_brk_h(print = "f")
+```
+
+<br>
+
+## Numeric summaries
+
+### `num_sum()`
+
+```{r}
+df |> num_sum(vars = c("libauth", "leftrigh", "welfare2"))
+```
+
+### `num_crs()`
+
+```{r}
+num_crs(df, nums = c("libauth", "leftrigh", "welfare2"), brk = "RAgeCat", stats = "mean")
+```
+
+<br>
+
+## Predictor-level breakdowns
+
+### `natural_breaks()`
+
+```{r}
+natural_breaks(df, vars = c("libauth", "leftrigh", "welfare2"), nbrk = 5)
+```
+
+### `return_one2()` + `return_one2_format()`
+
+```{r}
+return_one2(df, out = "skipmeal", lev = c("n_val", "p_val"), preds = c("RSex", "RAgeCat")) |>
+  return_one2_format(print = "f")
+```
