@@ -1,0 +1,7 @@
+^LICENSE\.md$
+^.*\.Rproj$
+^\.Rproj\.user$
+^\.DS_Store$
+^.*/\.DS_Store$
+^deck_.*\.pdf$
+^deck\.Rcheck$
