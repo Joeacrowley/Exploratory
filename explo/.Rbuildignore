@@ -1,0 +1,8 @@
+^docs$
+^.*\.Rproj$
+^\.Rproj\.user$
+^README\.Rmd$
+^explo_.*\.pdf$
+^\.Rhistory$
+^\.DS_Store$
+^.*/\.DS_Store$

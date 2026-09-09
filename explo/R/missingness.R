@@ -150,7 +150,7 @@ df_miss_brk <- function(data,
     tidyr::pivot_longer(cols = dplyr::everything(), names_to = "name", values_to = "label")
 
   output <- dplyr::full_join(labs, output, by = "name") |> dplyr::relocate(label, .after = name)
-  output <- output %>% filter(name != brk)
+  output <- output |> dplyr::filter(name != brk)
 
   if (isTRUE(keep_all_miss)) output <- output |> dplyr::filter(any_val == 1)
   if (isTRUE(sort_miss)) output <- output |> dplyr::arrange(dplyr::desc(num_val))

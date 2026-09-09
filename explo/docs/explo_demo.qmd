@@ -1,12 +1,12 @@
 ---
-title: "Quick_descriptives: function reference and usage"
+title: "explo: function reference and usage"
 format: html
 editor: visual
 ---
 
 ## What this is
 
-This document demonstrates the functions in the `QuickDescriptives` package. Unlike the old workflow (functions defined *inside* Quarto chunks, then `writeLines(deparse(...))`'d out to loose `.R` files), the functions here live in `../R/*.R` as ordinary package code with roxygen documentation. This `.qmd` only *uses* the package -- it doesn't define anything.
+This document demonstrates the functions in the `explo` package (formerly `QuickDescriptives`). Unlike the old workflow (functions defined *inside* Quarto chunks, then `writeLines(deparse(...))`'d out to loose `.R` files), the functions here live in `../R/*.R` as ordinary package code with roxygen documentation. This `.qmd` only *uses* the package -- it doesn't define anything.
 
 While the package is still a pilot (not yet installed), `devtools::load_all()` loads it straight from source, same as `library()` would once installed.
 
