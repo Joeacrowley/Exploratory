@@ -43,8 +43,8 @@ add_divider_slide <- function(slides, text, footer = NULL, header = NULL) {
   .mint_require_master(slides)
   slides <- .mint_new_slide(slides, "divider", text,
                             title_label = "Text Placeholder 9")
-  slides <- .mint_maybe(slides, header, "Subtitle 2")
   slides <- .mint_maybe(slides, footer, "Straight Connector 3")
+  slides <- .mint_maybe(slides, header, "Subtitle 2")
   invisible(slides)
 }
 
