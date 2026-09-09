@@ -54,8 +54,11 @@ placeholder labels — useful when a `ph_with()` call fails.
 - The package is tied to the one bundled template. A template change means
   editing `R/aaa-template-spec.R` (master name, layout names, placeholder
   labels, table-area geometry).
-- `fit_to_height()` is a heuristic. Row heights are advisory in PowerPoint,
-  so it reduces overflow rather than guaranteeing a hard cap.
+- `fit_to_height()` is a heuristic (trim padding, then uniform row height).
+  Row heights are advisory in PowerPoint and font size is untouched, so it
+  reduces overflow rather than guaranteeing a hard cap. A table that still
+  doesn't fit afterwards raises a warning - shrink it editorially (fewer
+  rows/columns, smaller font, split across slides).
 - `add_divider_slide(footer = )` targets a real footer placeholder that sits
   low and short in this template; long footers overflow the slide.
 - Chart helpers need `mschart` (Suggests).

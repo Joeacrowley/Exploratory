@@ -124,6 +124,8 @@ double_text_column_slide <- function(slides, title, left_text = NULL,
 #' @param max_height,max_width Bounding box for the table when
 #'   `control_height = TRUE`; height in inches, width in centimetres.
 #'   Defaults are the template's table-area size.
+#' @param warn Passed to [fit_to_height()]: warn when the table cannot be
+#'   made to fit and will overflow the slide.
 #'
 #' @return The modified `slides` object, invisibly.
 #' @export
@@ -133,10 +135,11 @@ double_text_column_slide <- function(slides, title, left_text = NULL,
 full_width_table_slide <- function(slides, title, text, table, footer = NULL,
                                    control_height = TRUE,
                                    max_height = .mint_table_max_height_in,
-                                   max_width = .mint_table_max_width_cm) {
+                                   max_width = .mint_table_max_width_cm,
+                                   warn = TRUE) {
   .mint_require_master(slides)
   if (isTRUE(control_height)) {
-    table <- fit_to_height(table, max_height = max_height)
+    table <- fit_to_height(table, max_height = max_height, warn = warn)
     table <- flextable::fit_to_width(table, max_width = max_width, unit = "cm")
   }
   slides <- .mint_new_slide(slides, "full_width_table", title)

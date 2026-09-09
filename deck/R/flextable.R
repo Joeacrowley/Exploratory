@@ -54,20 +54,26 @@ make_flex <- function(df, caption = NULL, digits = 0) {
 #' Shrink a flextable to fit a maximum height
 #'
 #' A heuristic: if the table's natural height exceeds `max_height` it first
-#' trims cell padding, and if that is not enough it sets every row to a
-#' uniform height. Row heights are advisory in PowerPoint, so this reduces
-#' overflow rather than guaranteeing a hard cap. Measurements are in inches
-#' (matching [flextable::flextable_dim()]).
+#' trims cell padding, and if that is not enough it forces every row to a
+#' uniform height. Row heights are advisory in PowerPoint and font size is
+#' left untouched, so this reduces overflow rather than guaranteeing a hard
+#' cap. When the padding trim is not enough and rows have to be compressed,
+#' the table will still overflow in PowerPoint and a warning is raised
+#' (unless `warn = FALSE`); the fix then is editorial - fewer rows,
+#' fewer/narrower columns, a smaller font, or splitting across slides.
+#' Measurements are in inches (matching [flextable::flextable_dim()]).
 #'
 #' @param ft A [flextable::flextable()].
 #' @param max_height Maximum height in inches.
 #' @param add_header Count the header rows when dividing the height.
+#' @param warn Warn when rows had to be compressed below their natural
+#'   height (i.e. the table will still overflow the slide).
 #'
 #' @return A [flextable::flextable()].
 #' @export
 #' @examples
 #' fit_to_height(make_flex(mtcars), max_height = 3.3)
-fit_to_height <- function(ft, max_height, add_header = TRUE) {
+fit_to_height <- function(ft, max_height, add_header = TRUE, warn = TRUE) {
   natural_height <- flextable::flextable_dim(ft)$height
 
   if (natural_height > max_height) {
@@ -75,12 +81,25 @@ fit_to_height <- function(ft, max_height, add_header = TRUE) {
     natural_height <- flextable::flextable_dim(ft)$height
   }
 
+  # Still over after trimming padding: forcing uniform row heights below what
+  # the content wants. flextable_dim() would now report the forced height, so
+  # it can't tell us whether the result really fits - judge from the natural
+  # (pre-force) height instead.
   if (natural_height > max_height) {
     n_rows <- flextable::nrow_part(ft, part = "body")
     if (add_header) {
       n_rows <- n_rows + flextable::nrow_part(ft, part = "header")
     }
     ft <- flextable::height_all(ft, height = max_height / n_rows)
+
+    if (warn) {
+      warning(sprintf(
+        paste0("Table wants %.2f in but max_height is %.2f in. Rows were ",
+               "compressed to fit the grid; text will still overflow in ",
+               "PowerPoint. Reduce rows/columns or the font size."),
+        natural_height, max_height
+      ), call. = FALSE)
+    }
   }
 
   ft

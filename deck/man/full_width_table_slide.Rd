@@ -12,7 +12,8 @@ full_width_table_slide(
   footer = NULL,
   control_height = TRUE,
   max_height = .mint_table_max_height_in,
-  max_width = .mint_table_max_width_cm
+  max_width = .mint_table_max_width_cm,
+  warn = TRUE
 )
 }
 \arguments{
@@ -33,6 +34,9 @@ template's table area with \code{\link[=fit_to_height]{fit_to_height()}} then
 \item{max_height, max_width}{Bounding box for the table when
 \code{control_height = TRUE}; height in inches, width in centimetres.
 Defaults are the template's table-area size.}
+
+\item{warn}{Passed to \code{\link[=fit_to_height]{fit_to_height()}}: warn when the table cannot be
+made to fit and will overflow the slide.}
 }
 \value{
 The modified \code{slides} object, invisibly.

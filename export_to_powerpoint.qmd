@@ -125,6 +125,12 @@ styles a data frame, and `full_width_table_slide()` shrinks it toward that
 box with `fit_to_height()` + `flextable::fit_to_width()` unless
 `control_height = FALSE`.
 
+`fit_to_height()` is only a heuristic (trim padding, then force uniform row
+heights) -- it cannot rescue an arbitrarily large table, and when rows have
+to be compressed below their natural height it warns that the table will
+still overflow in PowerPoint. The 15-row example below is deliberately too
+tall, so that warning is expected here; pass `warn = FALSE` to silence it.
+
 ```{r}
 ft_mtcars <- mtcars |>
   rownames_to_column() |>

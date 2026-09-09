@@ -71,6 +71,14 @@ test_that("make_flex() returns a flextable, with and without a caption", {
 test_that("fit_to_height() shrinks a tall table", {
   tall <- make_flex(mtcars)
   before <- flextable::flextable_dim(tall)$height
-  after <- flextable::flextable_dim(fit_to_height(tall, max_height = 3))$height
+  after <- flextable::flextable_dim(
+    suppressWarnings(fit_to_height(tall, max_height = 3))
+  )$height
   expect_lt(after, before)
+})
+
+test_that("fit_to_height() warns when a table cannot be made to fit", {
+  expect_warning(fit_to_height(make_flex(mtcars), max_height = 0.5), "overflow")
+  expect_silent(fit_to_height(make_flex(mtcars), max_height = 0.5, warn = FALSE))
+  expect_silent(fit_to_height(make_flex(head(mtcars, 3)), max_height = 10))
 })

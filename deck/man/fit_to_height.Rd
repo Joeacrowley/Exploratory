@@ -4,7 +4,7 @@
 \alias{fit_to_height}
 \title{Shrink a flextable to fit a maximum height}
 \usage{
-fit_to_height(ft, max_height, add_header = TRUE)
+fit_to_height(ft, max_height, add_header = TRUE, warn = TRUE)
 }
 \arguments{
 \item{ft}{A \code{\link[flextable:flextable]{flextable::flextable()}}.}
@@ -12,16 +12,23 @@ fit_to_height(ft, max_height, add_header = TRUE)
 \item{max_height}{Maximum height in inches.}
 
 \item{add_header}{Count the header rows when dividing the height.}
+
+\item{warn}{Warn when rows had to be compressed below their natural
+height (i.e. the table will still overflow the slide).}
 }
 \value{
 A \code{\link[flextable:flextable]{flextable::flextable()}}.
 }
 \description{
 A heuristic: if the table's natural height exceeds \code{max_height} it first
-trims cell padding, and if that is not enough it sets every row to a
-uniform height. Row heights are advisory in PowerPoint, so this reduces
-overflow rather than guaranteeing a hard cap. Measurements are in inches
-(matching \code{\link[flextable:flextable_dim]{flextable::flextable_dim()}}).
+trims cell padding, and if that is not enough it forces every row to a
+uniform height. Row heights are advisory in PowerPoint and font size is
+left untouched, so this reduces overflow rather than guaranteeing a hard
+cap. When the padding trim is not enough and rows have to be compressed,
+the table will still overflow in PowerPoint and a warning is raised
+(unless \code{warn = FALSE}); the fix then is editorial - fewer rows,
+fewer/narrower columns, a smaller font, or splitting across slides.
+Measurements are in inches (matching \code{\link[flextable:flextable_dim]{flextable::flextable_dim()}}).
 }
 \examples{
 fit_to_height(make_flex(mtcars), max_height = 3.3)
