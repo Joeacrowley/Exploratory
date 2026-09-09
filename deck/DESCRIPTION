@@ -1,0 +1,22 @@
+Package: deck
+Title: Slide Builders for the Sage Mint PowerPoint Template
+Version: 0.1.0
+Authors@R:
+    person("Joe", "Crowley", email = "joeac121@gmail.com", role = c("aut", "cre"))
+Description: A small set of helpers that wrap 'officer' to place titles, text,
+    tables and charts onto the layouts of the bundled "Sage Mint Theme"
+    PowerPoint template. Also provides 'flextable' helpers for preparing
+    tables sized to the template's table area.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Depends:
+    R (>= 4.2)
+Imports:
+    flextable,
+    officer
+Suggests:
+    mschart,
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.3
