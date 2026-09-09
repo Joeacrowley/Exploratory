@@ -17,8 +17,8 @@ devtools::install("deck")
 # or, without installing:  devtools::load_all("deck")
 ```
 
-The functions were originally developed inline in this document and dumped to
-`Scripts/ppt_functions/`; that folder is now superseded by the package.
+The functions were originally developed inline in this document and dumped
+to a `Scripts/ppt_functions/` folder; both are now replaced by the package.
 
 -   Local copy: [Example PowerPoint from functions.pptx](`r URLencode("Example PowerPoint from functions.pptx")`)
 -   GitHub copy: [Example PowerPoint from functions.pptx](https://raw.githubusercontent.com/Joeacrowley/Exploratory/main/Example%20PowerPoint%20from%20functions.pptx)
