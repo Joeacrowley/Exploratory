@@ -7,9 +7,8 @@
 df_miss_brk(
   data,
   brk,
-  show = "perc_miss",
-  keep_all_miss = FALSE,
-  sort_miss = TRUE,
+  type = "n_miss",
+  show_label = FALSE,
   form = "df",
   export = NULL
 )
@@ -17,30 +16,32 @@ df_miss_brk(
 \arguments{
 \item{data}{A data frame.}
 
-\item{brk}{Character: name of the grouping/breakdown variable.}
+\item{brk}{<\code{\link[rlang:args_data_masking]{data-masking}}> The grouping /
+breakdown variable, given unquoted. Coerced to a factor with unused
+levels dropped.}
 
-\item{show}{One of \code{"perc_miss"} (default), \code{"n_miss"}, \code{"n_not_miss"},
-\code{"p_not_miss"}.}
+\item{type}{One of \code{"n_miss"} (default, number of cases missing),
+\code{"n_val"} (number not missing), \code{"p_miss"} (percentage missing) or
+\code{"p_val"} (percentage not missing).}
 
-\item{keep_all_miss}{Logical. If \code{FALSE} (default), drop variables with
-no valid data in any level of \code{brk}.}
+\item{show_label}{Logical. If \code{TRUE}, append each variable's \code{labelled}
+variable label to its name in the \code{Variable} column. Default \code{FALSE}.}
 
-\item{sort_miss}{Logical. If \code{TRUE} (default), sort rows by how many
-levels of \code{brk} have valid data (descending).}
+\item{form}{One of \code{"df"} (default, return a tibble) or \code{"flx"} (return a
+formatted flextable). When \code{export} is supplied a huxtable is always
+built; \code{form = "flx"} then additionally converts it to a flextable.}
 
-\item{form}{Unused placeholder carried over from the original
-implementation (kept for interface compatibility).}
-
-\item{export}{Unused placeholder carried over from the original
-implementation (kept for interface compatibility).}
+\item{export}{Optional file path. If supplied, a formatted \code{.xlsx} copy is
+written there.}
 }
 \value{
-A tibble tagged (see \code{\link[=.add_tags]{.add_tags()}}) with the \code{show} statistic and
-\code{brk}'s variable label, consumed by \code{\link[=df_miss_brk_h]{df_miss_brk_h()}}.
+A tibble when \code{form = "df"} and \code{export} is \code{NULL}; a flextable
+when \code{form = "flx"}; otherwise the underlying huxtable.
 }
 \description{
 Reports missingness (or non-missingness) for every variable in \code{data},
-crosstabulated by the levels of \code{brk}, plus a flag for whether each
-variable has any valid data at all within each level of \code{brk} and how
-many levels of \code{brk} it has valid data in.
+crosstabulated by the levels of \code{brk}, alongside a column total across all
+cases and a count of how many levels of \code{brk} each variable has any valid
+data in. Optionally formats the result as a huxtable/flextable and/or
+writes a formatted \code{.xlsx} copy.
 }

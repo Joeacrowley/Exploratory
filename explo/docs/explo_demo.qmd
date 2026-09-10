@@ -76,12 +76,12 @@ df |> select(Married, ChildHh) |> mfreq(labels = TRUE)
 df |> df_miss() |> arrange(desc(p_miss)) |> head()
 ```
 
-### `df_miss_brk()` + `df_miss_brk_h()`
+### `df_miss_brk()`
 
 Missingness broken down by a grouping variable, formatted as a flextable.
 
 ```{r}
-df |> df_miss_brk(brk = "RAgeCat", show = "perc_miss") |> df_miss_brk_h(print = "f")
+df |> df_miss_brk(brk = RAgeCat, type = "p_miss", form = "flx")
 ```
 
 <br>

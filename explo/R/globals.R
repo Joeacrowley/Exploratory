@@ -17,6 +17,7 @@ utils::globalVariables(c(
   "p", "n", "f", "var", "total", "levels",
   "n_miss", "n_val", "na_miss", "na_val", "user_miss", "user_val",
   "name", "any_val", "num_val", "label",
+  "brk", "Variable", "val", "Label",
   "break_var", "variable", "stat", "value", "id",
   "labs", "out2", "result", "sort"
 ))

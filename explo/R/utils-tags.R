@@ -1,18 +1,20 @@
 # Internal metadata-tagging helpers ------------------------------------------
 #
-# The original 'quackery' versions of ctabs(), df_miss_brk() and
-# df_miss_brk_h() called add_tags()/has_tag() from a small personal package
-# called 'tagr'. Since that package's source/CRAN status wasn't confirmed,
-# these two internal helpers replace it with an equivalent built on a plain
-# "tags" attribute, so the package has no unverified external dependency.
-# Swap these out for the real tagr calls if you'd rather keep using it.
+# The original 'quackery' versions of ctabs() (and the former df_miss_brk() /
+# df_miss_brk_h() pair) called add_tags()/has_tag() from a small personal
+# package called 'tagr'. Since that package's source/CRAN status wasn't
+# confirmed, these two internal helpers replace it with an equivalent built
+# on a plain "tags" attribute, so the package has no unverified external
+# dependency. Swap these out for the real tagr calls if you'd rather keep
+# using it. Only ctabs() still uses them -- df_miss_brk() now builds its
+# caption inline and no longer needs the tag bridge.
 #
-# NOTE: in both places tagr was originally called (ctabs(), df_miss_brk()),
-# the result of add_tags() was never reassigned back to the object being
-# returned (e.g. `add_tags(result, p_lab, p_lab_n)` instead of
-# `result <- add_tags(result, p_lab, p_lab_n)`), so the tag silently never
-# attached and has_tag()/attributes()$tags always came back empty downstream.
-# That reassignment has been fixed at both call sites in this port.
+# NOTE: where tagr was originally called, the result of add_tags() was never
+# reassigned back to the object being returned (e.g. `add_tags(result, p_lab,
+# p_lab_n)` instead of `result <- add_tags(result, p_lab, p_lab_n)`), so the
+# tag silently never attached and has_tag()/attributes()$tags always came
+# back empty downstream. That reassignment has been fixed at the ctabs()
+# call site in this port.
 
 #' Attach lightweight metadata tags to an object
 #'
