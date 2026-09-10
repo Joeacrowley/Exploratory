@@ -6,7 +6,7 @@
 \alias{deck-package}
 \title{deck: Slide Builders for the Sage Mint PowerPoint Template}
 \description{
-A small set of helpers that wrap 'officer' to place titles, text, tables and charts onto the layouts of the bundled "Sage Mint Theme" PowerPoint template. Also provides 'flextable' helpers for preparing tables sized to the template's table area.
+A small set of helpers that wrap 'officer' to place titles, text, tables and charts onto the layouts of the bundled "Sage Mint Theme" PowerPoint template. Also provides 'flextable' helpers for preparing tables sized to the template's table area, and 'mschart' builders for native, editable Office charts in the NatCen house style.
 }
 \author{
 \strong{Maintainer}: Joe Crowley \email{joeac121@gmail.com}

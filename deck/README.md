@@ -23,6 +23,8 @@ ppt <- mint_pptx() |>
   full_width_content_slide("Headlines", c("Revenue up 4%", "Churn flat")) |>
   double_text_column_slide("Trade-offs", left_text = "Pros", right_text = "Cons") |>
   full_width_table_slide("Detail", "First rows", make_flex(head(mtcars, 15))) |>
+  full_width_chart_slide("By group", chart = bar_chart(counts, "group", "n",
+                                                       colour = "categorical")) |>
   add_end_slide("Thanks", subtitle = "questions?")
 
 print(ppt, target = "deck.pptx")
@@ -31,7 +33,7 @@ print(ppt, target = "deck.pptx")
 `mint_layouts(ppt)` lists the layouts the builders target and their real
 placeholder labels — useful when a `ph_with()` call fails.
 
-## Functions
+## Slide builders
 
 | Function | Layout |
 |---|---|
@@ -47,6 +49,28 @@ placeholder labels — useful when a `ph_with()` call fails.
 | `make_flex()` | data frame -> styled flextable |
 | `fit_to_height()` | shrink a flextable toward a height cap |
 
+## Chart builders
+
+Native, editable Office charts in the NatCen house style (via `mschart`).
+Each returns an `ms_*` object to feed straight into `full_width_chart_slide()`
+or `text_and_chart_slide()`.
+
+| Function | |
+|---|---|
+| `bar_chart()` | one bar series; flat fill or one colour per bar |
+| `clustered_bar_chart()` | bars clustered by a `group` column |
+| `stacked_bar_chart()` | stacked bars; `percent = TRUE` caps the axis at 100 |
+| `line_chart()` | one line per `group` level; `date` axis formatting |
+| `nc_palette()` | the 5-hue x 5-shade house palette, as a matrix |
+
+```r
+bar_chart(d, x = "category", y = "n", colour = "categorical")
+line_chart(ts, x = "month", y = "value", group = "series")
+```
+
+The `colour` argument takes a hue name (`"green"`, `"blue"`, ...), `"categorical"`
+/ `"categorical10"`, a single colour, or a vector of colours.
+
 ## Notes / known limits
 
 - Every builder returns the deck invisibly, so it works in a pipe or as a
@@ -61,4 +85,7 @@ placeholder labels — useful when a `ph_with()` call fails.
   rows/columns, smaller font, split across slides).
 - `add_divider_slide(footer = )` targets a real footer placeholder that sits
   low and short in this template; long footers overflow the slide.
-- Chart helpers need `mschart` (Suggests).
+- The chart builders were ported from the loose `mscharts code, functions.R`
+  scratch script; the 4x-duplicated colour block and the repeated house-style
+  theme are now single shared helpers (`.chart_colours()`,
+  `.natcen_chart_style()`).
