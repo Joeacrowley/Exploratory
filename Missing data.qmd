@@ -1,0 +1,316 @@
+---
+title: "Missing data"
+format: html
+editor: visual
+---
+
+## Package set up
+
+```{r packages, collapse = T, message=F, warning=F}
+library(here)
+library(haven)
+library(tidyverse)
+library(labelled)
+library(flextable)
+library(huxtable)
+```
+
+```{r load data}
+
+# Load BSA teaching data
+df <- readRDS(here::here("data", "synthetic_bsa2019.rds"))
+
+df %>% 
+  select(welfare2, leftrigh, libauth, RSex, RAgeCat) %>% 
+  look_for()
+
+```
+
+
+```{r}
+
+df2 <- df %>% mutate(brk = as_factor(RSex)) %>% select(-RSex)
+
+mis_func <- list(
+  n_miss = ~sum(is.na(.x)), 
+  n_val = ~sum(!is.na(.x)),
+  p_miss = ~sum(is.na(.x) / n() * 100),
+  p_val = ~sum(!is.na(.x) / n() * 100)
+)
+
+mis_func$n_miss
+
+brk_missingness <- df2 %>% group_by(brk) %>% summarise_all(
+  list(mis_func[["p_val"]])
+) %>% 
+  pivot_longer(cols = - brk, names_to = "Variable", values_to = "val") %>% 
+  pivot_wider(names_from = brk, values_from = val)
+
+total <- df2 %>% summarise_all(list(mis_func[["p_val"]])) %>% 
+  pivot_longer(cols = everything(), names_to = "Variable", values_to = "Total (all cases)")
+
+  # per-group count of columns with at least 1 valid case
+  n_cols_valid_by_brk <- df2 %>% 
+    group_by(brk) %>% 
+    summarise(across(everything(), ~ any(!is.na(.x)))) %>% 
+    pivot_longer(names_to = "Variable", values_to = "any", cols = -brk) %>% 
+    pivot_wider(names_from = brk, values_from = any) %>%
+    rowwise() %>% 
+    mutate(n_cols_any_valid = sum(c_across(-Variable))) %>% 
+    ungroup() %>% 
+    select(Variable, n_cols_any_valid)
+  
+df2 %>%  group_by(brk) %>% 
+  summarise(across(everything(), ~ any(!is.na(.x)))) %>% 
+  ungroup() %>% 
+  summarise(across(-brk, sum)) %>% 
+  pivot_longer(everything(), names_to = "Variable", values_to = "n_brk_levels_with_valid")
+
+result <- full_join(brk_missingness, total)
+
+n_labels_in_df <- var_label(df2, null_action = "skip") %>% length()
+
+if(n_labels_in_df > 0){
+result_with_label <- full_join(result, 
+              labelled::var_label(df2, null_action = "fill") %>% 
+                as_tibble() %>% 
+                pivot_longer(cols = everything(), 
+                             names_to = "Variable", 
+                             values_to = "Label")
+                    ) %>% 
+  relocate(Label, .after = "Variable")
+
+} else {result_with_label <- result}
+
+result_with_label
+
+df
+```
+
+
+```{r}
+
+df_miss_brk <- function(data, brk, type = "n_miss", show_label = FALSE){
+  
+  mis_func <- list(
+    n_miss = ~sum(is.na(.x)), 
+    n_val = ~sum(!is.na(.x)),
+    p_miss = ~round(sum(is.na(.x)) / n() * 100, 1),
+    p_val = ~round(sum(!is.na(.x)) / n() * 100, 1)
+  )
+  
+  if(!type %in% names(mis_func)) {
+    stop("`type` must be one of: ", paste(names(mis_func), collapse = ", "))
+  }
+  
+  df <- data %>% mutate(brk = as_factor({{brk}})) %>% select(-{{brk}})
+  
+  missing_by_brk <- df %>% 
+    group_by(brk) %>% 
+    summarise(across(everything(), mis_func[[type]])) %>% 
+    pivot_longer(cols = -brk, names_to = "Variable", values_to = "val") %>% 
+    pivot_wider(names_from = brk, values_from = val)
+  
+  missing_total <- df %>% 
+    select(-brk) %>%
+    summarise(across(everything(), mis_func[[type]])) %>% 
+    pivot_longer(cols = everything(), names_to = "Variable", values_to = "Total (all cases)")
+  
+  result <- full_join(missing_by_brk, missing_total, by = join_by(Variable))
+  
+  n_cols_with_valid_cases <- df %>% group_by(brk) %>% 
+    summarise(across(everything(), ~ any(!is.na(.x)))) %>% 
+    ungroup() %>% 
+    summarise(across(-brk, sum)) %>% 
+    pivot_longer(everything(), names_to = "Variable", values_to = "n_brk_levels_valid")
+
+  result <- result %>% full_join(n_cols_with_valid_cases, by = join_by(Variable))
+  
+  
+  if(show_label){
+    df_minus_brk <- df %>% select(-brk)
+    n_labels_in_df <- labelled::var_label(df_minus_brk, null_action = "skip") %>% length()
+    
+    if(n_labels_in_df > 0){
+      result <- full_join(
+        result, 
+        labelled::var_label(df_minus_brk, null_action = "fill") %>% 
+          as_tibble() %>% 
+          pivot_longer(cols = everything(), names_to = "Variable", values_to = "Label"), 
+        by = join_by(Variable)
+      ) %>% 
+        mutate(Variable = paste0(Variable, ": ", Label)) %>% 
+        select(-Label)
+    }
+  }
+  
+  result
+}
+
+df_miss_brk(data = df, brk = RSex, type = "p_val")  
+df_miss_brk(data = df, brk = RSex, type = "n_val", show_label = T)  
+df_miss_brk(data = df, brk = RSex, type = "n_", show_label = T)  
+
+```
+
+
+```{r}
+df_miss_brk <- function(data, brk, type = "n_miss", show_label = FALSE,
+                         form = "df", export = NULL){
+  
+  mis_func <- list(
+    n_miss = ~sum(is.na(.x)), 
+    n_val = ~sum(!is.na(.x)),
+    p_miss = ~round(sum(is.na(.x)) / n() * 100, 1),
+    p_val = ~round(sum(!is.na(.x)) / n() * 100, 1)
+  )
+  
+  type_labels <- list(
+    n_miss = "number of cases missing",
+    n_val = "number of cases NOT missing",
+    p_miss = "percentage of cases missing",
+    p_val = "percentage of cases NOT missing"
+  )
+  
+  if(!type %in% names(mis_func)) {
+    stop("`type` must be one of: ", paste(names(mis_func), collapse = ", "))
+  }
+  
+  if(!form %in% c("df", "flx")) {
+    stop("`form` must be one of: 'df', 'flx'")
+  }
+  
+  df <- data %>% mutate(brk = fct_drop(as_factor({{brk}}))) %>% select(-{{brk}})
+  
+  missing_by_brk <- df %>% 
+    group_by(brk) %>% 
+    summarise(across(everything(), mis_func[[type]])) %>% 
+    pivot_longer(cols = -brk, names_to = "Variable", values_to = "val") %>% 
+    pivot_wider(names_from = brk, values_from = val)
+  
+  missing_total <- df %>% 
+    select(-brk) %>%
+    summarise(across(everything(), mis_func[[type]])) %>% 
+    pivot_longer(cols = everything(), names_to = "Variable", values_to = "Total (all cases)")
+  
+  result <- full_join(missing_by_brk, missing_total, by = join_by(Variable))
+  
+  n_cols_with_valid_cases <- df %>% 
+    group_by(brk) %>% 
+    summarise(across(everything(), ~ any(!is.na(.x)))) %>% 
+    summarise(across(-brk, sum)) %>% 
+    pivot_longer(everything(), names_to = "Variable", values_to = "n_brk_levels_valid")
+  
+  result <- result %>% full_join(n_cols_with_valid_cases, by = join_by(Variable))
+  
+  if(show_label){
+    df_minus_brk <- df %>% select(-brk)
+    n_labels_in_df <- labelled::var_label(df_minus_brk, null_action = "skip") %>% length()
+    
+    if(n_labels_in_df > 0){
+      result <- full_join(
+        result, 
+        labelled::var_label(df_minus_brk, null_action = "fill") %>% 
+          as_tibble() %>% 
+          pivot_longer(cols = everything(), names_to = "Variable", values_to = "Label"), 
+        by = join_by(Variable)
+      ) %>% 
+        mutate(Variable = paste0(Variable, ": ", Label)) %>% 
+        select(-Label)
+    }
+  }
+  
+  # Plain tibble path -- no huxtable work needed at all
+  if(form == "df" && is.null(export)) {
+    return(result)
+  }
+  
+  # --- huxtable build, shared by form == "flx" and export != NULL ---
+  
+  brk_label <- data %>% 
+    select({{brk}}) %>% 
+    labelled::var_label(null_action = "fill") %>% 
+    unlist(use.names = FALSE)
+  
+  caption <- paste0("Table shows ", type_labels[[type]], " crosstabulated by ", brk_label, ".")
+  
+  ht <- result |>
+    huxtable::as_hux() |>
+    huxtable::set_all_padding(1) |>
+    huxtable::set_outer_padding(1) |>
+    huxtable::set_font_size(10) |>
+    huxtable::set_font("Arial") |>
+    huxtable::set_number_format(huxtable::everywhere, huxtable::everywhere, value = huxtable::fmt_pretty(digits = 2)) |>
+    huxtable::set_bold(row = 1, col = huxtable::everywhere) |>
+    huxtable::set_bottom_border(row = 1, col = huxtable::everywhere) |>
+    huxtable::set_na_string("na") |>
+    huxtable::set_outer_borders(huxtable::everywhere, huxtable::everywhere, huxtable::brdr(1, style = "solid", "black")) |>
+    huxtable::set_background_color(huxtable::evens, huxtable::everywhere, "grey95") |>
+    huxtable::set_align(huxtable::everywhere, huxtable::everywhere, "left") |>
+    huxtable::set_wrap(huxtable::everywhere, huxtable::everywhere, TRUE) |>
+    huxtable::set_width(1) |>
+    huxtable::map_text_color(huxtable::by_cases(is.na(.) ~ "red")) |>
+    huxtable::set_caption(caption)
+  
+  col_lengths <- apply(ht, 2, function(col) max(nchar(as.character(col))))
+  relative_widths <- col_lengths / sum(col_lengths)
+  huxtable::col_width(ht) <- relative_widths
+  
+  if(!is.null(export)) {
+    
+    wb <- huxtable::as_Workbook(ht = ht, sheet = "missingness")
+    
+    # Caption occupies row 1, header row 2, data from row 3 -- since the
+    # caption is now always set, this offset is no longer conditional.
+    end_row <- 2 + nrow(result)
+    end_col <- ncol(result)
+    
+    openxlsx::removeRowHeights(wb, "missingness", rows = 1:end_row)
+    
+    openxlsx::addStyle(wb, "missingness", style = openxlsx::createStyle(wrapText = TRUE),
+                        cols = 1:end_col, rows = 2:end_row, gridExpand = TRUE, stack = TRUE)
+    
+    openxlsx::removeColWidths(wb, "missingness", cols = 1:end_col)
+    
+    .col_width <- function(huxt) {
+      header_row_char_length <- purrr::map_int(
+        1:ncol(huxt),
+        ~ tibble::as_tibble(huxt[, .x]) |> purrr::as_vector() |> stringr::str_length() |> max()
+      )
+      w <- header_row_char_length + 1
+      w <- ifelse(w > 50, 50, w)
+      w <- ifelse(w < 5, 5, w)
+      w
+    }
+    
+    col_widths <- .col_width(ht)
+    openxlsx::setColWidths(wb, "missingness", cols = 1:end_col, widths = col_widths, ignoreMergedCells = TRUE)
+    
+    # Freeze below the caption + header rows now that the caption always exists
+    openxlsx::freezePane(wb, "missingness", firstActiveRow = 3, firstActiveCol = NULL)
+    
+    openxlsx::addStyle(wb = wb, sheet = "missingness",
+                        style = openxlsx::createStyle(fontSize = 14, textDecoration = "bold", valign = "center"),
+                        rows = 1, cols = 1)
+    openxlsx::setRowHeights(wb, "missingness", rows = 1, heights = 30)
+    
+    openxlsx::saveWorkbook(wb, file = export, overwrite = TRUE)
+  }
+  
+  if(form == "flx") {
+    ht <- ht |> huxtable::as_flextable() |> flextable::autofit()
+  }
+  
+  ht
+}
+
+df_miss_brk(data = df, brk = RSex, form = "flx", type = "p_miss", show_label = T)
+
+```
+
+
+
+
+
+
+
