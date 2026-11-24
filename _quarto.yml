@@ -15,6 +15,7 @@ book:
     - part: "Exporting results"
       chapters:
         - export_to_powerpoint.qmd
+        - styled_mscharts.qmd
     
 format:
   html:

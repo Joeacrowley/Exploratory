@@ -1,0 +1,152 @@
+---
+title: "Styled mschart charts"
+format: html
+editor: visual
+---
+
+## Overview
+
+`deck` ships four chart builders that produce **native, editable Office
+charts** (via `mschart`) in the NatCen house style, plus the house colour
+palette. Each returns an `ms_*` object you feed straight into
+`full_width_chart_slide()` or `text_and_chart_slide()`.
+
+They were ported from the old `Visualisations/old/mscharts code, functions.R`
+scratch script -- the colour-selection block that was copy-pasted into four
+functions, and the house-style theme repeated in every one, are now the
+single shared helpers `deck:::.chart_colours()` and
+`deck:::.natcen_chart_style()`.
+
+```r
+devtools::install("deck")   # or devtools::load_all("deck")
+```
+
+<br>
+
+```{r packages, collapse = T}
+library(tidyverse)
+library(mschart)
+library(officer)
+library(deck)
+
+set.seed(1)
+```
+
+<br>
+
+## The house palette
+
+`nc_palette()` returns a 5-hue by 5-shade matrix of hex colours.
+
+```{r}
+nc_palette()
+```
+
+The `colour` argument of every builder accepts:
+
+-   a **hue name** -- `"green"`, `"purple"`, `"pink"`, `"blue"`, `"orange"` -- for successive shades of that hue
+-   `"categorical"` (5 colours) or `"categorical10"` (10) -- distinct hues
+-   a single colour (hex or R colour name)
+-   a vector of colours
+
+<br>
+
+## Test data
+
+```{r}
+bars <- data.frame(
+  category = c("A", "B", "C", "D"),
+  value    = c(10, 23, 15, 8)
+)
+
+grouped <- data.frame(
+  meta_cat = factor(rep(c("One", "Two", "Three"), 4), levels = c("One", "Two", "Three")),
+  category = rep(c("A", "B", "C", "D"), each = 3),
+  value    = c(10, 9, 3, 23, 10, 6, 15, 11, 25, 8, 17, 23)
+)
+
+monthly <- data.frame(
+  month  = rep(seq(as.Date("2020-01-01"), by = "month", length.out = 12), 4),
+  series = rep(c("A", "B", "C", "D"), each = 12),
+  value  = round(runif(48, 20, 80))
+)
+```
+
+```{r}
+ppt <- mint_pptx()
+```
+
+<br>
+
+## Bar chart
+
+Flat fill (default NatCen green):
+
+```{r}
+ppt <- ppt |>
+  full_width_chart_slide(
+    title = "Bar chart",
+    chart = bar_chart(bars, x = "category", y = "value")
+  )
+```
+
+One colour per bar, horizontal:
+
+```{r}
+ppt <- ppt |>
+  full_width_chart_slide(
+    title = "Bar chart - one colour per bar, horizontal",
+    chart = bar_chart(bars, x = "category", y = "value",
+                      colour = "categorical", horizontal = TRUE)
+  )
+```
+
+<br>
+
+## Clustered bar chart
+
+```{r}
+ppt <- ppt |>
+  full_width_chart_slide(
+    title = "Clustered bar chart",
+    chart = clustered_bar_chart(grouped, x = "category", y = "value",
+                                group = "meta_cat")
+  )
+```
+
+<br>
+
+## Stacked bar chart
+
+`percent = TRUE` caps the value axis at 100; `num_fmt` sets the label / axis
+number format.
+
+```{r}
+ppt <- ppt |>
+  full_width_chart_slide(
+    title = "Stacked bar chart",
+    chart = stacked_bar_chart(grouped, x = "category", y = "value",
+                              group = "meta_cat", horizontal = TRUE,
+                              colour = "categorical10")
+  )
+```
+
+<br>
+
+## Line chart
+
+```{r}
+ppt <- ppt |>
+  full_width_chart_slide(
+    title = "Line chart",
+    chart = line_chart(monthly, x = "month", y = "value", group = "series")
+  )
+```
+
+<br>
+
+## Save
+
+```{r}
+print(ppt, target = "Example styled mscharts.pptx")
+```
